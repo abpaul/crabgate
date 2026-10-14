@@ -1,0 +1,35 @@
+{% extends "marketing/base.html" %}
+{% block title %}Recover your signup link | CrabGate{% endblock title %}
+{% block description %}Request another verification link to finish your CrabGate signup.{% endblock description %}
+{% block styles %}<style>
+  .recovery { max-width: 620px; margin: 24px auto 72px; padding: 40px 36px; }
+  .recovery .lede { margin-block: 12px 24px; }
+  .recovery .sticky-note { margin-block: 20px; }
+  @media (max-width: 680px) { .recovery { margin: 8px 16px 56px; padding: 30px 20px; } }
+</style>{% endblock styles %}
+{% block main %}
+<main class="paper recovery" aria-labelledby="recovery-heading">
+  <h1 id="recovery-heading" class="h-l">Recover your signup link</h1>
+  <p class="lede">Lost the email, or your link expired? Enter the Shop address and email you used during signup. You do not need to create another shop.</p>
+  {% if error %}<p class="sticky-note" role="alert">{{ error }}</p>{% endif %}
+  {% if requested %}<div class="sticky-note" role="status">
+    <p>If these details match an unfinished signup, we request another verification email. Check your inbox and spam folder. Links work once for 24 hours.</p>
+    <p>We limit recovery to three requests per hour. If no email arrives, wait an hour and try again, or <a href="mailto:hello@crabgate.com">contact hello@crabgate.com</a>. Email delivery can fail.</p>
+  </div>{% endif %}
+  {% if show_form %}
+  <form action="{{ marketing_origin }}/signup/recover" method="post" aria-labelledby="recovery-heading">
+    <div class="field">
+      <label class="label" for="recovery-shop">Shop address</label>
+      <div class="input-group"><input class="input" id="recovery-shop" name="subdomain" required maxlength="63" pattern="[a-z0-9]+(-[a-z0-9]+)*" autocapitalize="none" spellcheck="false" aria-describedby="recovery-shop-hint" value="{{ subdomain }}"><span class="addon">.{{ base_domain }}</span></div>
+      <p class="hint" id="recovery-shop-hint">Enter the part before .{{ base_domain }}.</p>
+    </div>
+    <div class="field">
+      <label class="label" for="recovery-email">Signup email</label>
+      <input class="input" id="recovery-email" name="email" type="email" required maxlength="254" autocomplete="email" value="{{ email }}">
+    </div>
+    <button class="btn btn-block" type="submit">Request another link</button>
+  </form>
+  {% else %}<p><a class="btn btn-block" href="{{ marketing_origin }}/signup/recover">Request another verification link</a></p>{% endif %}
+  <p class="hint">Already finished signup? <a href="{{ marketing_origin }}/sign-in">Sign in to your Back Office</a>.</p>
+</main>
+{% endblock main %}

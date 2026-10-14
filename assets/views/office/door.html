@@ -1,0 +1,29 @@
+{% extends "office/base.html" %}
+{% block title %}Door Links and Members{% endblock title %}
+{% block styles %}
+<style>
+  .cols { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 32px; align-items: start; }
+  .links { list-style: none; padding: 0; }
+  .links li { display: grid; gap: 10px; padding: 14px 0; border-top: 2px dashed var(--line-strong); }
+  .links li > div:first-child { display: grid; }
+  .links .revoked b { color: var(--muted); text-decoration: line-through; }
+  .newlink { margin-top: 20px; padding-top: 18px; border-top: 3px solid var(--ink); }
+  .newlink .row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 10px; }
+  .newlink .field + .field { margin-top: 0; }
+  .link-url { width: 100%; font-size: .875rem; }
+  @media (max-width: 1100px) { .cols { grid-template-columns: 1fr; } }
+  @media (max-width: 520px) { .newlink .row { grid-template-columns: 1fr; } }
+</style>
+{% endblock styles %}
+{% block content %}
+<div class="bo-head"><div><p class="kicker">Who can check people in</p><h1 class="h-l">Door Links and members</h1></div></div>
+<div class="cols">
+  <section class="paper paper-pad" aria-labelledby="dl-h"><span class="tape tape-c" aria-hidden="true"></span><h2 id="dl-h" class="h-m">Door Links</h2><p class="small" style="margin:6px 0 16px">A link that opens the Door for one event, no sign-in needed. Give it to a helper for the night. It stops working when the event ends, or when you revoke it.</p>
+    <ul class="links">{% for link in links %}<li {% if link.revoked %}class="revoked"{% endif %}><div><b>{{ link.label }}</b><span class="small muted">{{ link.event_title }}, works until {{ link.ends }}, {{ link.checkins }} check-ins</span></div>{% if link.revoked %}<span class="stamp">Revoked</span>{% else %}<div class="btn-row"><a class="btn btn-line btn-sm" href="{{ link.url }}">Open</a><form method="post" action="/office/door/links/{{ link.id }}/revoke"><button class="link-btn small" type="submit">Revoke</button></form></div><label class="small" for="url-{{ link.id }}">Door Link URL</label><input class="input link-url" id="url-{{ link.id }}" value="{{ link.url }}" readonly>{% endif %}</li>{% endfor %}</ul>
+    <form class="newlink" method="post" action="/office/door/links"><h3 class="h-s">New Door Link</h3><div class="row"><div class="field"><label class="label" for="dl-label">Label</label><input class="input" id="dl-label" name="label" placeholder="Front door" required></div><div class="field"><label class="label" for="dl-ev">Event</label><select class="select" id="dl-ev" name="event_id" required>{% for event in events %}<option value="{{ event.id }}">{{ event.title }}</option>{% endfor %}</select></div></div><button class="btn" type="submit" style="margin-top:14px">Create Door Link</button></form>
+  </section>
+  <section class="paper paper-pad" aria-labelledby="m-h"><h2 id="m-h" class="h-m">Members</h2><p class="small" style="margin:6px 0 10px">People who sign in. Admins run everything. Door Staff can only check people in.</p><table class="table table-cards"><thead><tr><th scope="col">Email</th><th scope="col">Role</th><th scope="col"><span class="sr-only">Actions</span></th></tr></thead><tbody>{% for member in members %}<tr><td><b>{{ member.email }}</b></td><td>{{ member.role }}</td><td class="r"><form method="post" action="/office/door/members/{{ member.id }}/remove"><button class="link-btn small" type="submit">Remove</button></form></td></tr>{% endfor %}</tbody></table>
+    <form class="newlink" method="post" action="/office/door/members"><h3 class="h-s">Invite a member</h3><div class="row"><div class="field"><label class="label" for="m-email">Email</label><input class="input" id="m-email" name="email" type="email" placeholder="name@example.com" required></div><div class="field"><label class="label" for="m-role">Role</label><select class="select" id="m-role" name="role"><option>Door Staff</option><option>Admin</option></select></div></div><button class="btn" type="submit" style="margin-top:14px">Send invite</button></form>
+  </section>
+</div>
+{% endblock content %}

@@ -1,0 +1,15 @@
+services:
+  app:
+    environment:
+      CRABGATE_EDITION: hosted
+      SHOP_BASE_DOMAIN: ${SHOP_BASE_DOMAIN:?set SHOP_BASE_DOMAIN}
+      HOST: https://${SHOP_BASE_DOMAIN:?set SHOP_BASE_DOMAIN}
+    healthcheck:
+      test: ["CMD", "curl", "-fsS", "-H", "Host: ${SHOP_BASE_DOMAIN:?set SHOP_BASE_DOMAIN}", "http://127.0.0.1:5150/"]
+
+  caddy:
+    environment:
+      SHOP_BASE_DOMAIN: ${SHOP_BASE_DOMAIN:?set SHOP_BASE_DOMAIN}
+    volumes:
+      - ./deploy/Caddyfile.hosted:/etc/caddy/Caddyfile:ro
+      - ${CRABGATE_ORIGIN_CERT_DIR:?set CRABGATE_ORIGIN_CERT_DIR}:/etc/caddy/origin:ro

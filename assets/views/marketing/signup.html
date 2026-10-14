@@ -1,0 +1,62 @@
+{% extends "marketing/base.html" %}
+{% block title %}Set up your next event | CrabGate{% endblock title %}
+{% block description %}Create your Organizer on CrabGate. {{ price }} a year. Ticket money is paid into your Stripe account.{% endblock description %}
+{% block styles %}<style>
+  .page { display: grid; grid-template-columns: minmax(0, 620px) 340px; gap: 56px; justify-content: center; align-items: start; padding-block: 24px 72px; }
+  .form { padding: 40px 36px 34px; transform: rotate(-.4deg); }
+  .form .h-l { margin: 4px 0 8px; }
+  .form .lede { margin-bottom: 24px; }
+  .next { padding-top: 40px; }
+  .nums { margin: 10px 0 0 22px; display: grid; gap: 8px; }
+  @media (max-width: 920px) {
+    .page { grid-template-columns: 1fr; gap: 28px; padding-block: 8px 56px; }
+    .form { padding: 30px 20px 24px; }
+    .next { padding-top: 0; }
+  }
+
+</style>{% endblock styles %}
+{% block main %}
+<main class="wrap page">
+  <form class="paper form" action="/signup" method="post" aria-labelledby="h">
+    <span class="tape tape-c" aria-hidden="true"></span>
+    <p class="kicker">{{ price }} a year when your event goes on sale</p>
+    <h1 id="h" class="h-l">Set up your next event</h1>
+    <p class="lede">Tell us who you are, and we'll create your shop. Paul gets an email the moment you sign up, and he'll write back within one working day to book your free setup call.</p>
+    <div class="field">
+      <label class="label" for="org">Organizer name</label>
+      <input class="input" id="org" name="name" required maxlength="120" autocomplete="organization" value="{{ name }}">
+      <p class="hint">Buyers see this name at the top of your Shop and on every ticket.</p>
+    </div>
+    <div class="field">
+      <label class="label" for="sub">Shop address</label>
+      <div class="input-group"><input class="input" id="sub" name="subdomain" required maxlength="63" pattern="[a-z0-9]+(-[a-z0-9]+)*" autocapitalize="none" spellcheck="false" aria-describedby="sub-ok" value="{{ subdomain }}"><span class="addon">.{{ base_domain }}</span></div>
+      <p class="hint" id="sub-ok">Lowercase letters, numbers, and dashes. We'll check it's free when you submit.</p>
+    </div>
+    <div class="field">
+      <label class="label" for="em">Your email</label>
+      <input class="input" id="em" name="email" type="email" required autocomplete="email" value="{{ email }}">
+      <p class="hint">You'll be the first Admin. The link we email you confirms your address and opens your Back Office.</p>
+    </div>
+    <div class="field">
+      <label class="label" for="next">Your next event and its date <span class="opt">Optional</span></label>
+      <input class="input" id="next" name="next_event" maxlength="200" value="{{ next_event }}">
+      <p class="hint">This is the one Paul sets up with you on the call.</p>
+    </div>
+    <button class="btn btn-block" type="submit" style="margin-top:22px">Create my shop</button>
+    <p class="hint">By creating a shop you agree to our <a href="/terms">terms</a> and <a href="/privacy">privacy page</a>.</p>
+    {% if error %}<p class="sticky-note" role="alert">{{ error }}</p>{% endif %}
+    {% if sent %}<p class="sticky-note" role="status">Your verification email was accepted for delivery. Check your inbox and spam folder. Open the link within 24 hours to get into your Back Office.</p>{% endif %}
+    <p class="hint">Lost your signup email or link expired? <a href="/signup/recover">Request another verification link</a>. Already finished? <a href="/sign-in">Sign in</a>.</p>
+  </form>
+  <aside class="next" aria-labelledby="n-h">
+    <div class="sticky-note">
+      <h2 id="n-h" class="h-s">What happens next</h2>
+      <ol class="nums small">
+        <li>Open the link in your email to get into your Back Office.</li>
+        <li>Paul emails you to book your free 45-minute setup call.</li>
+        <li>You pay {{ price }} for the year when you put your event on sale.</li>
+      </ol>
+    </div>
+  </aside>
+</main>
+{% endblock main %}

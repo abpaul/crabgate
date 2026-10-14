@@ -1,0 +1,45 @@
+SMALL-EVENT TICKET LAUNCH CHECKLIST
+Editable checklist for one event. Add an owner beside each task.
+
+EVENT DETAILS
+Event name: ______________________________
+Event date/time/time zone: ______________________________
+Venue/location: ______________________________
+Public event URL: ______________________________
+Responsible organizer/contact: ______________________________
+
+PLAN
+[ ] State who the event is for and what is included.
+[ ] Confirm venue capacity and count places, not orders.
+[ ] List event costs and a realistic paid attendance scenario.
+[ ] Include processing and ticketing costs in the price calculation.
+[ ] Explain any buyer-paid fees and the full checkout total.
+[ ] State practical details, restrictions and change instructions.
+
+TEST
+[ ] Read the event page on a phone.
+[ ] Use the platform's supported test purchase process.
+[ ] Check one place and a multi-place order.
+[ ] Open the confirmation and ticket on a phone.
+[ ] Find the correct order and attendee records again.
+[ ] Verify the public link and signup/purchase buttons.
+
+SHARE
+[ ] Write a short invitation for the existing audience.
+[ ] Give relevant partners the same current event URL.
+[ ] Confirm that announced deadlines and availability are true.
+[ ] Assign someone to answer booking questions.
+
+DOOR
+[ ] Give staff the correct check-in access.
+[ ] Check device battery and venue connection.
+[ ] Practice finding an attendee and checking in a ticket.
+[ ] Agree who handles duplicate scans and booking exceptions.
+[ ] Protect any attendee export used in the backup plan.
+[ ] Do not assume offline support without testing it.
+
+REVIEW
+[ ] Record paid places against the attendance plan.
+[ ] Note buyer questions and difficult steps for the next event.
+
+Free guide: https://crabgate.com/guides/sell-tickets-small-event

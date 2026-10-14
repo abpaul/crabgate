@@ -1,0 +1,57 @@
+<!doctype html>
+<html lang="en-IE">
+<head><link rel="icon" href="/favicon.ico" sizes="32x32"><link rel="icon" type="image/svg+xml" href="/static/shared/favicon.svg"><link rel="apple-touch-icon" href="/apple-touch-icon.png">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Set up your organizer | CrabGate</title>
+<link rel="preload" href="/static/shared/figtree-latin-wght.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="stylesheet" href="/static/shared/crabgate.css">
+<style>
+  .signup-page{min-height:100vh;display:grid;place-items:center;padding:28px 16px 56px}
+  .signup-wrap{width:min(100%,960px)}
+  .signup-wrap .brand{margin-bottom:26px}
+  .signup-grid{display:grid;grid-template-columns:minmax(0,1.35fr) minmax(240px,.75fr);gap:30px;align-items:start}
+  .signup-sheet{padding:38px 36px}
+  .signup-sheet .lede{margin:12px 0 26px}
+  .signup-sheet .field{margin-top:20px}
+  .signup-sheet .btn{margin-top:26px}
+  .signup-note{padding:27px 26px}
+  .signup-note ol{margin:16px 0 0;padding-left:24px;display:grid;gap:12px}
+  @media(max-width:720px){.signup-grid{grid-template-columns:1fr}.signup-sheet{padding:30px 22px}.signup-note{padding:24px 22px}}
+</style>
+</head>
+<body class="board">
+<main class="signup-page">
+  <div class="signup-wrap">
+    <a class="brand" href="/"><img src="/static/shared/crabgate-mark-small.svg" alt="" width="40" height="40">CrabGate</a>
+    <div class="signup-grid">
+      <form class="paper signup-sheet" action="/signup" method="post" aria-labelledby="signup-title">
+        <span class="tape tape-c" aria-hidden="true"></span>
+        <h1 id="signup-title" class="h-l">Make this Shop yours</h1>
+        <p class="lede">This install is for one organizer. Give your Shop a name, then open the email link to enter your Back Office.</p>
+        <div class="field">
+          <label class="label" for="organizer-name">Organizer name</label>
+          <input class="input" id="organizer-name" name="name" required maxlength="120" autocomplete="organization" value="{{ name }}">
+          <p class="hint">Buyers will see this name on your Shop and tickets.</p>
+        </div>
+        <div class="field">
+          <label class="label" for="admin-email">Admin email</label>
+          <input class="input" id="admin-email" name="email" type="email" required maxlength="254" autocomplete="email" value="{{ email }}">
+          <p class="hint">Use the email you entered during installation. We'll send a sign-in link there.</p>
+        </div>
+        <button class="btn btn-block" type="submit">Create my Shop</button>
+        {% if error %}<p class="sticky-note" role="alert">{{ error }}</p>{% endif %}
+      </form>
+      <aside class="paper signup-note" aria-labelledby="next-title">
+        <h2 id="next-title" class="h-s">Next, at your pace</h2>
+        <ol class="small">
+          <li>Open your sign-in email.</li>
+          <li>Save your master key and connect your Stripe account.</li>
+          <li>Create a Draft event. Publish when setup is ready.</li>
+        </ol>
+      </aside>
+    </div>
+  </div>
+</main>
+</body>
+</html>

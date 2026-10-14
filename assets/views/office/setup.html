@@ -1,0 +1,213 @@
+{% extends "office/base.html" %}
+{% block title %}Setup{% endblock title %}
+{% block styles %}<style>
+  .wiz { display: grid; grid-template-columns: 270px minmax(0, 1fr); gap: 34px; align-items: start; max-width: 1040px; }
+  .wiz > * { min-width: 0; }
+  .wiz-card li, .wiz-card code, .events-list li { overflow-wrap: anywhere; }
+  .wiz-steps { list-style: none; display: grid; gap: 4px; }
+  .wiz-steps a { display: grid; grid-template-columns: 34px 1fr; gap: 10px; align-items: center; min-height: 52px; padding: 6px 10px; border-radius: var(--radius); text-decoration: none; font-weight: 700; font-size: 1.0625rem; }
+  .wiz-steps a:hover { background: rgb(41 53 60 / .06); }
+  .wiz-steps a[aria-current] { background: var(--paper); box-shadow: var(--shadow-sm); font-weight: 900; color: var(--deep); }
+  .wiz-steps .n { display: grid; place-items: center; width: 34px; height: 34px; border: 2px solid var(--ink); border-radius: 50%; font-weight: 900; font-size: 1rem; background: var(--paper); }
+  .wiz-steps .is-done .n { background: var(--yellow); border-color: var(--yellow); color: var(--deep); }
+  .wiz-progress { margin-bottom: 14px; font-size: 1rem; }
+  .wiz-card { padding: clamp(24px, 3vw, 40px); }
+  .wiz-card .step-of { font-size: .8125rem; font-weight: 800; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); }
+  .wiz-card .step-title { margin-top: 6px; font-size: 1.75rem; font-weight: 900; line-height: 1.15; letter-spacing: -.02em; color: var(--deep); text-wrap: balance; }
+  .wiz-card .step-intro { margin-top: 10px; font-size: 1.125rem; line-height: 1.5; max-width: 58ch; }
+  .wiz-card p { font-size: 1rem; line-height: 1.5; max-width: 60ch; }
+  .wiz-card p + p { margin-top: 10px; }
+  .wiz-card ol { margin: 18px 0 0 22px; display: grid; gap: 10px; font-size: 1rem; line-height: 1.5; max-width: 60ch; }
+  .wiz-card .part { margin-top: 30px; padding-top: 24px; border-top: 2px dashed var(--line-strong); }
+  .wiz-card .part-title { font-size: 1.25rem; font-weight: 800; line-height: 1.25; letter-spacing: -.01em; color: var(--deep); }
+  .wiz-card form { margin-top: 16px; display: grid; gap: 14px; justify-items: start; max-width: 520px; }
+  .wiz-card .field { width: 100%; }
+  .wiz-card .field + .field { margin-top: 0; }
+  .wiz-card .label { font-size: 1rem; }
+  .wiz-card .input, .wiz-card .select { font-size: 1.0625rem; }
+  .wiz-card .hint { font-size: .9375rem; }
+  .wiz-card .stamp { margin-bottom: 12px; }
+  .wiz-foot { display: flex; flex-wrap: wrap; gap: 12px 24px; align-items: center; margin-top: 24px; padding-top: 18px; border-top: 2px dashed var(--line-strong); font-size: 1rem; }
+  .wiz-foot a { display: inline-flex; align-items: center; min-height: 44px; }
+  .copy { background: #f7f5f0; padding: 12px; border: 2px dashed var(--line-strong); word-break: break-all; font-size: 1rem; }
+  .events-list { margin: 10px 0 0; list-style: none; display: grid; max-width: 440px; border: 2px solid var(--line-strong); border-radius: var(--radius); background: #FBF9F4; overflow: hidden; }
+  .events-list li { padding: 8px 14px; font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; font-size: .875rem; line-height: 1.4; color: var(--deep); }
+  .events-list li + li { border-top: 1px solid var(--line); }
+  .events-note { margin-top: 8px; font-size: .9375rem; color: var(--muted); }
+  .side-box { margin-top: 26px; padding: 20px; font-size: 1rem; }
+  .side-box form { margin-top: 12px; }
+  .data-box { max-width: 1040px; margin-top: 34px; padding: clamp(24px, 3vw, 40px); }
+  .data-box p { font-size: 1rem; max-width: 60ch; margin-top: 8px; }
+  @media (max-width: 900px) {
+    .wiz { grid-template-columns: 1fr; gap: 22px; }
+    .wiz-steps { grid-template-columns: 1fr 1fr; }
+    .wiz-steps a { font-size: 1rem; min-height: 48px; }
+  }
+  @media (max-width: 520px) { .wiz-steps { grid-template-columns: 1fr; } }
+</style>{% endblock styles %}
+{% block content %}
+<div class="bo-head"><div><p class="kicker">Before you sell</p><h1 class="h-l">Set up your Shop</h1><p class="lede">One step at a time. You can stop and come back whenever you like.</p></div></div>
+
+<div class="wiz">
+  <nav aria-label="Setup steps">
+    <p class="wiz-progress"><b>{{ done }} of {{ total }}</b> done</p>
+    <ol class="wiz-steps">
+      {% for step in steps %}<li class="{% if step.done %}is-done{% endif %}"><a href="/office/setup?step={{ step.key }}" {% if step.key == current %}aria-current="step"{% endif %}><span class="n">{% if step.done %}✓{% else %}{{ step.number }}{% endif %}</span><span>{{ step.title }}{% if step.done %}<span class="sr-only"> (done)</span>{% endif %}</span></a></li>{% endfor %}
+    </ol>
+    {% if hosted %}<div class="paper side-box">
+      <h2 class="h-s" style="font-size:1.125rem">Want a hand?</h2>
+      <p style="margin-top:6px">Book a free 45-minute onboarding call. We'll guide you through every step here while you do the clicking.</p>
+      {% if setup_status %}<p role="status" style="margin-top:10px">Your onboarding call: <strong>{{ setup_status }}</strong>.</p>{% else %}<form method="post" action="/office/setup/request"><button class="btn btn-line btn-sm" type="submit">Ask for an onboarding call</button></form><p class="hint" style="margin-top:8px">We'll email you to find a time.</p>{% endif %}
+    </div>{% endif %}
+  </nav>
+
+  <section class="paper wiz-card" aria-labelledby="step-h">
+    {% if error %}<div class="alert alert-error" role="alert" style="margin-bottom:18px"><strong>{% if error == "webhook_duplicate" %}{% if webhook_tested %}Your webhook is ready. Check older endpoints.{% else %}Your current webhook is pending verification. Check older endpoints.{% endif %}{% elif error == "webhook_permission" or error == "webhook_refused" %}{% if webhook_tested %}Your current webhook still works. The replacement was not created.{% else %}Your key is saved, but the webhook is not ready.{% endif %}{% else %}That didn't work.{% endif %}</strong>
+      {% if error == "webhook_permission" %}Stripe won't let this key create webhook endpoints. Give the key write access to <b>Webhook Endpoints</b> and save it again, or set the webhook up by hand below.
+      {% elif error == "webhook_refused" %}Stripe did not create the webhook. It usually refuses an address that the internet can't reach, such as <code>localhost</code>, or that isn't https. Save your key again to retry, or set the webhook up by hand below.
+      {% elif error == "webhook_duplicate" %}{% if webhook_tested %}The webhook works, but we couldn't remove an older webhook at the same address from your Stripe account.{% else %}We couldn't remove an older webhook at the same address from your Stripe account. Send a test event from Stripe to verify your current signing secret.{% endif %} Open the <b>Webhooks</b> page in Stripe and delete the older one, so Stripe doesn't send each event twice.
+      {% elif error == "webhook_superseded" %}A newer setup change was saved while this request was running. Check the current key and signing secret below. This request did not replace them. Check Stripe for an unused endpoint before retrying.
+      {% elif error == "billing_expired" %}This checkout has expired. Wait up to 4 minutes, then select Start subscription again.
+      {% elif error == "billing_retry_wait" %}Checkout is not available for this attempt. Wait up to 34 minutes, then select Start subscription again.
+      {% elif error == "key_format" %}That doesn't look like a Stripe key. It should start with sk_ or rk_.
+      {% elif error == "key_rejected" %}Stripe didn't accept that key. Check that you copied all of it, and that it's from the right Stripe account.
+      {% elif error == "secret_format" %}That doesn't look like a signing secret. It should start with whsec_.
+      {% elif error == "booking_terms" %}Enter a valid HTTPS booking-terms link. A link is needed when acknowledgement is required.
+      {% elif error == "smtp_unconfirmed" %}Test email acceptance could not be confirmed. Check the mail service and try again. Another attempt may deliver a duplicate.
+      {% elif error == "smtp_receipt_unconfirmed" %}The mail server accepted the test email, but its receipt could not be saved. Check your Admin inbox before sending another test. Another attempt may deliver a duplicate.
+      {% elif error == "currency" %}Choose EUR, GBP, or USD. The currency can't change after your first checkout.
+      {% else %}Use https links for your legal pages, and one valid email address for replies.{% endif %}
+    </div>{% endif %}
+
+    {% if current == "key" %}
+      <p class="step-of">Step {{ current_number }} of {{ total }}</p>
+      <h2 id="step-h" class="step-title">Save your master key</h2>
+      <p class="step-intro">Your install printed a master key once, when you set it up. It unlocks your buyers' details.</p>
+      <p>Keep it offline, and keep it apart from your backups. If you lose it, your encrypted data is gone for good.</p>
+      <form method="post" action="/office/setup/master-key"><button class="btn" type="submit">I've saved my key</button></form>
+
+    {% elif current == "stripe" %}
+      {% if key_tested %}<span class="stamp stamp-ink">Done</span>{% endif %}
+      <p class="step-of">Step {{ current_number }} of {{ total }}</p>
+      <h2 id="step-h" class="step-title">Connect Stripe</h2>
+      <p class="step-intro">Stripe takes the card payments, and the money lands in your own Stripe account. We never hold it. To connect the two, you give CrabGate a key from Stripe. This is the only step. We set up the rest in your Stripe account for you.</p>
+      {% if key_tested %}<p><b>Connected.</b> Your key ends in <b>…{{ key_last }}</b>. Paste a new one below if you ever need to replace it.</p>{% endif %}
+      <ol>
+        <li>Sign in to your Stripe dashboard and open the <b>API keys</b> page.</li>
+        <li>Copy your <b>secret key</b>. It starts with <code>sk_</code>.</li>
+        <li>Paste it here. We check it with Stripe straight away, then create the webhook that tells us when someone pays.</li>
+      </ol>
+      <p style="margin-top:14px">Prefer a restricted key? It starts with <code>rk_</code>. Give it <b>write</b> access to <b>Checkout Sessions</b>, <b>Refunds</b>, and <b>Webhook Endpoints</b>. Without write access to Webhook Endpoints, we still save your key, but you set up the webhook by hand.</p>
+      <p>Buyers can pay with any method you switch on in Stripe. For events that sell out, keep to methods that confirm at once.</p>
+      <form method="post" action="/office/setup/stripe">
+        <div class="field"><label class="label" for="stripe-key">Your Stripe key</label><input class="input" id="stripe-key" name="secret_key" type="password" autocomplete="off" required placeholder="sk_live_… or rk_live_…"><p class="hint">We store it encrypted. No Stripe account yet? Create one at stripe.com, then come back.</p></div>
+        <button class="btn" type="submit">Save and test my key</button>
+      </form>
+
+    {% elif current == "webhook" %}
+      {% if webhook_tested %}<span class="stamp stamp-ink">Done</span>{% endif %}
+      <p class="step-of">Step {{ current_number }} of {{ total }}</p>
+      <h2 id="step-h" class="step-title">Let Stripe tell us when someone pays</h2>
+      <p class="step-intro">When a buyer pays, Stripe tells CrabGate, and we send the tickets. Stripe calls this a webhook. CrabGate creates it in your Stripe account when you save your key.</p>
+      {% if webhook_tested and webhook_auto %}<p><b>Working.</b> CrabGate created the webhook in your Stripe account. Your signing secret ends in <b>…{{ webhook_last }}</b>. There is nothing more to do here.</p>
+      {% elif webhook_tested %}<p><b>Working.</b> Stripe has reached your Shop. Your signing secret ends in <b>…{{ webhook_last }}</b>. Check that this endpoint belongs to the same Stripe account and mode as your saved key.</p>
+      {% elif webhook_saved %}<div class="alert alert-yellow" role="status" style="margin-top:14px"><b>Secret saved. Now send a test event from Stripe.</b> This step turns to Done when the event arrives. <a href="/office/setup?step=webhook">Check again</a></div>
+      {% elif not key_tested %}<p><a href="/office/setup?step=stripe">Save your Stripe key first.</a> Then CrabGate sets this up for you.</p>{% endif %}
+      <details class="part"{% if not webhook_tested and key_tested %} open{% endif %}>
+      <summary class="part-title">Set up the webhook by hand</summary>
+      <ol>
+        <li>In your Stripe dashboard, open the <b>Webhooks</b> page and add an endpoint. Stripe may call it a destination.</li>
+        <li>Use this address:<p class="copy num" style="margin-top:8px">{{ webhook_url }}</p></li>
+        <li>Choose these events:
+          <ul class="events-list">
+            {% for event in webhook_events %}<li>{{ event }}</li>
+            {% endfor %}
+          </ul>
+          <p class="events-note">{{ webhook_events | length }} events in total. Tick each one, then save.</p>
+        </li>
+        <li>Stripe shows a <b>signing secret</b> that starts with <code>whsec_</code>. Paste it here.</li>
+        <li>Send a test event from Stripe. This step turns to Done when it arrives.</li>
+      </ol>
+      <form method="post" action="/office/setup/webhook">
+        <input type="hidden" name="attempt" value="{{ setup_attempt }}">
+        <div class="field"><label class="label" for="webhook-secret">Signing secret</label><input class="input" id="webhook-secret" name="secret" type="password" autocomplete="off" required placeholder="whsec_…"></div>
+        <button class="btn" type="submit">Save signing secret</button>
+      </form>
+      </details>
+
+    {% elif current == "email" %}
+      {% if smtp_tested %}<span class="stamp stamp-ink">Done</span>{% endif %}
+      <p class="step-of">Step {{ current_number }} of {{ total }}</p>
+      <h2 id="step-h" class="step-title">Check that ticket emails arrive</h2>
+      <p class="step-intro">Buyers get their tickets by email, so let's make sure your server can send them. We'll send a test message to your Admin email.</p>
+      {% if smtp_tested %}<p><b>Accepted by the mail server.</b> This does not confirm inbox delivery. Check your Admin inbox. If it did not arrive, check the mail service and send another.</p>
+      {% elif smtp_history_accepted %}<p>Historical test: the mail server accepted a previous message. This does not confirm acceptance of this attempt or inbox delivery.</p>
+      {% elif smtp_history_unverified %}<p>A previous test was recorded without mail-server acceptance proof. Send a new test and check your Admin inbox.</p>{% endif %}
+      <form method="post" action="/office/setup/email"><button class="btn" type="submit">Send me a test email</button></form>
+
+    {% elif current == "details" %}
+      {% if contact.reply_to %}<span class="stamp stamp-ink">Done</span>{% endif %}
+      <p class="step-of">Step {{ current_number }} of {{ total }}</p>
+      <h2 id="step-h" class="step-title">Currency and contact details</h2>
+      <p class="step-intro">Set the currency you sell in, and tell buyers where to reach you.</p>
+      <div class="part"><h3 class="part-title">Which currency do you sell in?</h3>
+      {% if currency_locked %}<p><strong>{{ currency }}</strong>. Locked since your first checkout.</p>{% else %}<form method="post" action="/office/setup/currency">
+        <div class="field"><label class="label" for="currency">Currency</label><select class="select" id="currency" name="currency"><option value="EUR" {% if currency == "EUR" %}selected{% endif %}>EUR (Euro)</option><option value="GBP" {% if currency == "GBP" %}selected{% endif %}>GBP (Pound sterling)</option><option value="USD" {% if currency == "USD" %}selected{% endif %}>USD (US dollar)</option></select><p class="hint">Choose it before your first buyer starts checkout, because it can't change after that.</p></div>
+        <button class="btn btn-line btn-sm" type="submit">Save currency</button>
+      </form>{% endif %}</div>
+      <div class="part"><h3 class="part-title">Where should buyers reach you?</h3>
+      <form method="post" action="/office/setup/contact">
+        <div class="field"><label class="label" for="reply-to">Reply-to email</label><input class="input" id="reply-to" name="reply_to" type="email" value="{{ contact.reply_to }}" placeholder="hello@example.com"><p class="hint">When a buyer replies to a ticket, event change, or refund email, it comes here.</p></div>
+        <div class="field"><label class="label" for="imprint-url">Imprint link <span class="opt">Optional</span></label><input class="input" id="imprint-url" name="imprint_url" type="url" pattern="https://.*" value="{{ contact.imprint_url }}" placeholder="https://example.com/imprint"></div>
+        <div class="field"><label class="label" for="privacy-url">Privacy link <span class="opt">Optional</span></label><input class="input" id="privacy-url" name="privacy_url" type="url" pattern="https://.*" value="{{ contact.privacy_url }}" placeholder="https://example.com/privacy"><p class="hint">Both links show in your Shop's footer.</p></div>
+        <button class="btn" type="submit">Save and continue</button>
+      </form></div>
+
+      <div class="part"><h3 class="part-title">Booking terms <span class="opt">Optional</span></h3>
+      <form method="post" action="/office/setup/booking-terms">
+        <div class="field"><label class="label" for="booking-terms-url">Booking-terms link</label><input class="input" id="booking-terms-url" name="url" type="url" pattern="https://.*" maxlength="2048" value="{{ booking_terms.url }}" placeholder="https://example.com/booking-terms"></div>
+        <label class="checkbox-label" for="booking-terms-required"><input id="booking-terms-required" type="checkbox" name="required" value="yes" {% if booking_terms.required %}checked{% endif %}> Require buyer acknowledgement at checkout</label>
+        <p class="hint">Buyers see a separate booking-terms checkbox. Changes before they submit require review and a new acknowledgement. Submitted bookings keep the terms they saw. This does not request marketing consent or change your privacy notice.</p>
+        <button class="btn btn-line" type="submit">Save booking terms</button>
+      </form></div>
+
+    {% elif current == "subscription" %}
+      {% if subscription_active %}<span class="stamp stamp-ink">Done</span>{% endif %}
+      <p class="step-of">Step {{ current_number }} of {{ total }}</p>
+      <h2 id="step-h" class="step-title">Start your subscription</h2>
+      {% if subscription_active %}<p class="step-intro"><b>Your subscription is {{ subscription_status }}.</b> You can publish events and sell tickets.</p>
+      <p>Need to change your card, see your invoices, or cancel? Stripe handles that on a secure page.</p>
+      <form method="post" action="/office/billing/portal"><button class="btn btn-line" type="submit">Manage my subscription</button></form>
+      {% else %}<p class="step-intro">You'll need a subscription before you can publish events and sell tickets. You can build Draft events without one.</p>
+      <p>Status: <strong>{{ subscription_status }}</strong>.</p>
+      <form method="post" action="/office/billing/start"><button class="btn" type="submit">Start my subscription</button></form>{% endif %}
+
+    {% elif current == "event" %}
+      {% if has_event %}<span class="stamp stamp-ink">Done</span>{% endif %}
+      <p class="step-of">Step {{ current_number }} of {{ total }}</p>
+      <h2 id="step-h" class="step-title">Create your first event</h2>
+      {% if has_event %}<p class="step-intro"><b>You have an event.</b> Open it to add ticket types, check the details, and publish.</p>
+      <p><a class="btn" href="/office/events">Go to my events</a></p>
+      {% else %}<p class="step-intro">Add the date, the venue, and your tickets. It starts as a Draft, so nothing goes on sale until you publish.</p>
+      <p style="margin-top:18px"><a class="btn" href="/office/events/new">Create my first event</a></p>{% endif %}
+
+    {% else %}
+      <span class="stamp stamp-ink">All done</span>
+      <h2 id="step-h" class="step-title">You're set up</h2>
+      <p class="step-intro">Everything on this page is done. Publish an event, share the link, and open the door.</p>
+      <p style="margin-top:18px"><a class="btn" href="/office/events">Go to my events</a></p>
+    {% endif %}
+
+    {% if current != "finished" %}<p class="wiz-foot">
+      {% if next %}<a href="/office/setup?step={{ next }}">Skip this for now</a>{% endif %}
+      {% if current != "event" %}<a href="/office/events/new">Create a Draft event instead</a>{% endif %}
+    </p>{% endif %}
+  </section>
+</div>
+
+<section class="paper data-box">
+  <h2 class="h-m">Your data</h2>
+  <p class="small">Download everything in one file to keep as a backup. The file holds decrypted buyer, attendee, and payment setup data, so store it somewhere safe. It holds no member logins.</p>
+  <p style="margin-top:14px"><a class="btn btn-line" href="/office/data/export">Download my data</a></p>
+</section>
+{% endblock content %}

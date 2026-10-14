@@ -1,0 +1,44 @@
+WORKSHOP REGISTRATION TEMPLATE
+Editable planning sheet or paper form. Not a hosted online form.
+Replace bracketed details before use. Remove unnecessary fields.
+
+WORKSHOP DETAILS (organizer completes)
+Workshop: [name]
+Session date: [date]
+Start/end time and time zone: [times]
+Venue/address or joining instructions: [details]
+Ticket option and price: [option, amount, currency]
+Maximum places for this session: [capacity]
+What to bring: [details]
+Change/refund instructions and organizer contact: [details]
+
+BUYER DETAILS
+Name: ______________________________
+Email for booking information: ______________________________
+Number of places requested: __________
+
+ATTENDEES (one entry per place; repeat as needed)
+Place 1 name: ______________________________
+Place 2 name: ______________________________
+Optional workshop preparation question, with its purpose:
+____________________________________________________________
+Answer: ____________________________________________________
+
+ORGANIZER RECORD (do not ask attendees to invent these)
+Booking reference: ______________________________
+Payment record reference: ______________________________
+Payment checked/status: ______________________________
+Places confirmed: __________
+Confirmation sent: ______________________________
+
+BEFORE USING THIS TEMPLATE
+[ ] Confirm each session's date, time, location and capacity.
+[ ] Distinguish the buyer from every attendee.
+[ ] Explain when a requested place becomes confirmed.
+[ ] Use the payment provider's checkout for paid bookings.
+[ ] Do not collect card numbers or security codes here.
+[ ] Show the full total before purchase.
+[ ] Explain what information is needed and who receives it.
+[ ] Test confirmation and ticket access on a phone.
+
+Free guide: https://crabgate.com/guides/workshop-registration-form

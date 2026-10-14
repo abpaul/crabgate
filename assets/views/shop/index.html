@@ -1,0 +1,58 @@
+{% extends "shop/base.html" %}
+{% block title %}What's on{% endblock title %}
+{% block styles %}
+<style>
+  .intro { padding-block: 20px 8px; max-width: 760px; }
+  .intro .lede { margin-top: 14px; font-size: 1.25rem; }
+  .month { display: flex; align-items: baseline; gap: 14px; margin: 44px 0 26px; }
+  .month h2 { font-size: 1.75rem; font-weight: 900; letter-spacing: -.02em; color: var(--deep); }
+  .month .scrawl { font-size: 1.0625rem; color: var(--muted); }
+  .grid { list-style: none; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 40px 32px; align-items: start; }
+  .grid > :nth-child(3n+1) { transform: rotate(-.8deg); }
+  .grid > :nth-child(3n+2) { transform: rotate(.6deg); }
+  .grid > :nth-child(3n) { transform: rotate(-.3deg); }
+  .ev { position: relative; padding: 14px 14px 20px; }
+  .ev:hover { box-shadow: 0 2px 2px rgb(11 21 27 / .06), 0 14px 28px rgb(11 21 27 / .12), 0 36px 60px -18px rgb(11 21 27 / .26); }
+  .ev:focus-within { outline: 3px solid var(--deep); outline-offset: 4px; }
+  .ev img { width: 100%; aspect-ratio: 3 / 2; object-fit: cover; }
+  .ev .body { padding: 16px 6px 0; }
+  .ev .when { font-size: 1rem; font-weight: 800; color: var(--deep); }
+  .ev h3 { margin-top: 6px; font-size: 1.5rem; font-weight: 900; line-height: 1.1; letter-spacing: -.02em; color: var(--deep); }
+  .ev h3 a { text-decoration: none; font-weight: 900; }
+  .ev h3 a::after { content: ""; position: absolute; inset: 0; }
+  .ev h3 a:focus-visible { outline: none; }
+  .ev .where { margin-top: 6px; font-size: 1.0625rem; }
+  .ev .price { margin-top: 12px; font-size: 1.0625rem; font-weight: 800; }
+  .bill { padding: 26px 22px 0; border-top: 10px solid var(--yellow); }
+  .bill .date { display: flex; align-items: flex-end; gap: 12px; border-bottom: 3px solid var(--deep); padding-bottom: 12px; }
+  .bill .day { font-size: 4.5rem; font-weight: 900; line-height: .8; letter-spacing: -.05em; color: var(--deep); }
+  .bill .mon { font-size: 1.125rem; font-weight: 900; line-height: 1.1; text-transform: uppercase; letter-spacing: .04em; }
+  .bill .body { padding: 14px 0 18px; }
+  .tabs { display: grid; grid-template-columns: repeat(6, 1fr); margin: 0 -22px; border-top: 2px dashed var(--line-strong); height: 92px; }
+  .tabs span { display: grid; place-items: center; border-right: 2px dashed var(--line-strong); font-size: .8125rem; font-weight: 800; color: var(--muted); white-space: nowrap; }
+  .tabs span:last-child { border-right: 0; }
+  .tabs span i { font-style: normal; display: block; transform: rotate(-90deg); }
+  @media (max-width: 1000px) { .grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+  @media (max-width: 640px) { .grid { grid-template-columns: minmax(0, 1fr); gap: 28px; } .intro { padding-top: 4px; } .month { margin: 30px 0 18px; } .ev img { aspect-ratio: 2 / 1; } .ev h3 { font-size: 1.375rem; } .bill .day { font-size: 3.5rem; } .tabs { height: 76px; } }
+</style>
+{% endblock styles %}
+{% block content %}
+<main class="wrap">
+  <div class="intro"><p class="kicker">{{ organizer_name }}</p><h1 class="h-xl">What's on at {{ organizer_name }}</h1><p class="lede">Pick an event. Your tickets arrive by email right away, and you show the code at the door.</p></div>
+  {% if groups | length == 0 %}<section class="paper paper-pad" style="margin-block:48px"><h2 class="h-m">No upcoming events</h2><p class="lede">Check back soon.</p></section>{% endif %}
+  {% for group in groups %}
+  <section aria-labelledby="month-{{ loop.index }}">
+    <div class="month"><h2 id="month-{{ loop.index }}">{{ group.month }}</h2><span class="scrawl">{{ group.count }} {% if group.count == 1 %}event{% else %}events{% endif %}</span></div>
+    <ul class="grid" role="list">
+      {% for event in group.events %}
+      <li class="ev paper {% if not event.has_cover %}bill{% endif %}">
+        {% if event.has_cover %}<span class="tape tape-c" aria-hidden="true"></span><img src="/events/{{ event.id }}/cover" alt="" width="1200" height="800">{% else %}<span class="pin" aria-hidden="true" style="top:-6px"></span><div class="date" aria-hidden="true"><span class="day">{{ event.day }}</span><span class="mon">{{ event.weekday }}<br>{{ event.month_short }}</span></div>{% endif %}
+        <div class="body"><p class="when">{{ event.when }}</p><h3><a href="/events/{{ event.id }}">{{ event.title }}</a></h3><p class="where">{{ event.venue }}</p><p class="price">{{ event.price }}</p></div>
+        {% if not event.has_cover %}<div class="tabs" aria-hidden="true">{% for tab in [1,2,3,4,5,6] %}<span><i>{{ event.tab }}</i></span>{% endfor %}</div>{% endif %}
+      </li>
+      {% endfor %}
+    </ul>
+  </section>
+  {% endfor %}
+</main>
+{% endblock content %}

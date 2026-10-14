@@ -1,0 +1,38 @@
+{% extends "shop/base.html" %}
+{% block title %}{% if handoff %}Review tickets{% else %}Choose tickets{% endif %}{% endblock title %}
+{% block head %}<meta name="robots" content="noindex,nofollow">{% if not handoff %}<base target="_top">{% endif %}{% endblock head %}
+{% block content %}
+<main class="wrap" style="max-width:640px;padding-block:24px">
+<section class="card paper topband" style="padding:24px" aria-labelledby="selector-title">
+<h1 id="selector-title">{% if handoff %}Review tickets{% else %}Choose tickets{% endif %}</h1>
+{% if series %}
+<h2>Choose a workshop date</h2>
+{% if series.dates %}<form method="get" target="_self">
+<label for="series-date">Workshop date</label>
+<select id="series-date" name="event_id" required style="width:100%">
+<option value="" disabled {% if not event %}selected{% endif %}>Choose a date</option>
+{% for date in series.dates %}<option value="{{ date.id }}" {% if date.selected %}selected{% endif %}>{{ date.label }}</option>{% endfor %}
+</select>
+<button class="btn btn-block" type="submit">Show tickets for this date</button>
+</form>{% endif %}
+<p><a href="{{ series.url }}" target="_top">Open Series on CrabGate</a> · <a href="{{ series.url }}" target="_blank" rel="noopener">Open Series in a new tab</a></p>
+{% endif %}
+{% if event %}<h2>{{ event.title }}</h2><p>{{ event.date }} · {{ event.start_time }} · {{ event.timezone }} · {{ event.venue }}</p>{% endif %}
+{% if notice %}<p role="status">{{ notice }}</p>{% endif %}
+{% if can_continue %}<form method="{% if handoff %}post{% else %}get{% endif %}" action="{% if handoff %}/checkout{% else %}{{ selection_url }}{% endif %}" {% if not handoff %}target="_top"{% endif %}>
+{% if handoff %}<input type="hidden" name="event_id" value="{{ event.id }}">{% endif %}{% endif %}
+{% for type in ticket_types %}
+<div style="padding-block:12px;border-bottom:1px solid var(--line)">
+{% if handoff %}<p>{{ type.name }} × {{ type.quantity }} · {{ type.price }} each</p>{% if can_continue %}<input type="hidden" name="quantity_{{ type.id }}" value="{{ type.quantity }}">{% endif %}
+{% else %}<p><strong>{{ type.name }}</strong> · {{ type.price }}</p>
+{% if type.state == "on-sale" and can_continue %}<label for="quantity-{{ type.id }}">{{ type.name }} quantity</label> <input class="quantity-input" id="quantity-{{ type.id }}" name="quantity_{{ type.id }}" type="number" min="0" max="{{ type.max }}" value="0" style="width:80px">
+{% elif type.state == "on-sale" %}<p>Available on the hosted event page</p>{% elif type.state == "sold-out" %}<p>Sold out</p>{% elif type.state == "coming-soon" %}<p>Sales have not opened yet</p>{% else %}<p>Sales have ended</p>{% endif %}{% endif %}
+</div>
+{% endfor %}
+{% if can_continue %}
+{% if handoff %}<p><strong>Total: {{ total }}</strong></p><p>Tickets are not reserved yet. Continue to reserve tickets and enter Buyer details, answer questions, review booking terms, and pay on CrabGate.</p>{% else %}<p>Choose tickets, then continue on CrabGate for Buyer details, questions, booking terms, and payment. Tickets are checked again before reservation.</p>{% endif %}
+<button class="btn btn-block" type="submit">{% if handoff %}Continue to checkout{% else %}Continue on CrabGate{% endif %}</button>
+</form>{% endif %}
+{% if event_url %}<p><a href="{{ event_url }}" target="_top">Open event on CrabGate</a> · <a href="{{ event_url }}" target="_blank" rel="noopener">Open event in a new tab</a></p>{% endif %}
+</section></main>
+{% endblock content %}

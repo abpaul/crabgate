@@ -1,0 +1,90 @@
+{% extends "marketing/base.html" %}
+{% block title %}Simple ticketing. {{ price }} a year. | CrabGate{% endblock title %}
+{% block description %}{{ price }} a year. Unlimited events and tickets, no platform transaction fees. Free for charities, nonprofits, and community organisations.{% endblock description %}
+{% block styles %}<style>
+  .plan-row { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 56px; align-items: center; margin-top: 24px; max-width: 1120px; }
+  .plan { display: grid; gap: 14px; justify-items: start; transform: rotate(.4deg); padding-top: 42px; }
+  .costs .lp-body { margin-top: 14px; }
+  @media (max-width: 920px) { .plan-row { grid-template-columns: 1fr; gap: 36px; } }
+  .price { font-size: 3rem; font-weight: 900; letter-spacing: -.03em; color: var(--deep); line-height: 1; }
+  .price .per { font-size: 1.125rem; font-weight: 700; letter-spacing: 0; color: var(--ink); }
+</style>{% endblock styles %}
+{% block main %}
+<main>
+  <section class="wrap lp-hero">
+    <p class="kicker">Pricing</p>
+    <h1 class="h-xl lp-h1">Simple ticketing. <mark>{{ price }} a year.</mark></h1>
+    <p class="lp-sub">Run unlimited events and sell unlimited tickets. CrabGate never takes a percentage of your sales.</p>
+    {% include "marketing/_cta.html" %}
+  </section>
+
+  <section class="wrap lp-sec" aria-labelledby="plan-h">
+    <h2 id="plan-h" class="h-l">What you get, and what it costs</h2>
+    <div class="plan-row">
+      <article class="paper paper-pad plan topband">
+        <span class="pin" aria-hidden="true"></span>
+        <h3 class="h-m">CrabGate</h3>
+        <p class="price"><span class="hl-under">{{ price }}</span><span class="per"> a year</span></p>
+        <p>We run it for you. Your shop is live at <b>yourname.crabgate.com</b> by the end of one call.</p>
+        <ul class="ticks small">
+          <li>Unlimited events.</li>
+          <li>Unlimited tickets.</li>
+          <li>No setup fee. Updates, backups, and support by email.</li>
+          <li>Your data is yours. Admins can export it until deletion starts 90 days after subscription lapse.</li>
+          <li>A refund within 30 days if it isn't for you.</li>
+        </ul>
+        <a class="btn" href="{{ setup_url | safe }}">Set up your next event</a>
+      </article>
+      <div class="costs">
+        <h3 class="h-m">0% of ticket sales</h3>
+        <div class="lp-body">
+          <p><b>{{ price }} a year to us.</b> That's the whole bill, in US dollars. No CrabGate transaction fee, no setup fee, and no percentage of ticket sales.</p>
+          <p><b>Your card processor's fee.</b> Payments go directly to you through Stripe. Stripe's card fee still applies; CrabGate never holds your ticket money.</p>
+          <p>If your buyers pay a booking fee where you sell today, they stop paying it.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+
+  <section class="wrap lp-sec" aria-labelledby="community-h">
+    <article class="paper paper-pad sheet">
+      <h2 id="community-h" class="h-m">Free for charities, nonprofits, and community organisations</h2>
+      <p class="lp-body">Running events for a charity, nonprofit, or community organisation? CrabGate is free for you. <a href="mailto:hello@crabgate.com">Email hello@crabgate.com</a> to get access.</p>
+    </article>
+  </section>
+
+  <section class="wrap lp-sec" aria-labelledby="fit-h">
+    <h2 id="fit-h" class="h-l">Built for organizers who already have an audience</h2>
+    <div class="lp-body">
+      <p>See what {{ price }} replaces for you: <a href="/for-rooms-with-an-audience">rooms with an audience</a>, <a href="/for-conferences">independent conferences</a>, or <a href="/for-workshops">repeating workshops</a>. Find the setup that suits your events.</p>
+      <p>Considering a switch from Eventbrite? Compare the workflow, fees, and marketplace tradeoffs in <a href="/eventbrite-alternative">CrabGate as an Eventbrite alternative</a>.</p>
+    </div>
+    <div class="paper paper-pad sheet">
+      {% include "marketing/_on_our_list.html" %}
+      <p class="after">Need Gift Aid, phone sales, or a marketplace that finds you an audience? That isn't us.</p>
+    </div>
+    {% include "marketing/_feedback.html" %}
+  </section>
+
+  {% include "marketing/_offer.html" %}
+
+  <section class="wrap lp-sec faq" aria-labelledby="faq-h">
+    <h2 id="faq-h" class="h-l">Questions about the price</h2>
+    <dl>
+      <div class="paper paper-pad"><dt class="h-s">Is there a free trial?</dt><dd>Better: Paul sets up your next event with you on a free 45-minute call. You pay {{ price }} for the year when you put that event on sale.</dd></div>
+      <div class="paper paper-pad"><dt class="h-s">Can I get my money back?</dt><dd>Yes. If your first event on CrabGate doesn't go well, email Paul within 30 days of paying and he'll refund the {{ price }}.</dd></div>
+      <div class="paper paper-pad"><dt class="h-s">Is CrabGate free for community organisations?</dt><dd>Yes. Charities, nonprofits, and community organisations get free access. <a href="mailto:hello@crabgate.com">Email hello@crabgate.com</a> and we'll arrange access with you.</dd></div>
+      <div class="paper paper-pad"><dt class="h-s">Why US dollars?</dt><dd>We have one price everywhere. Your card provider converts {{ price }} into your currency.</dd></div>
+      <div class="paper paper-pad"><dt class="h-s">Can I use my own domain, logo, and colours?</dt><dd>Not yet. They're on our list. If they matter to you, tell us.</dd></div>
+      <div class="paper paper-pad"><dt class="h-s">What if a subscription payment fails?</dt><dd>Nothing breaks. Your shop keeps working for a 14-day grace period, so you have time to sort it out. After grace ends, you can still check people in, and Admins can export data until deletion starts 90 days after the subscription lapses.</dd></div>
+      <div class="paper paper-pad"><dt class="h-s">Can I start without the call?</dt><dd>Yes. <a href="/signup">Sign up</a> and set things up yourself whenever you like. You start your subscription when you publish your first event.</dd></div>
+    </dl>
+  </section>
+
+  <section class="wrap closing" aria-labelledby="close-h">
+    <h2 id="close-h" class="h-l">One price a year. No fee on the ticket.</h2>
+    {% include "marketing/_cta.html" %}
+  </section>
+</main>
+{% endblock main %}

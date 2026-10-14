@@ -1,0 +1,45 @@
+{% extends "office/base.html" %}
+{% block title %}Attendees{% endblock title %}
+{% block styles %}
+<style>
+.attendees-search{display:grid;grid-template-columns:minmax(0,1fr) minmax(180px,280px) auto;gap:12px;padding:18px;margin-bottom:24px;align-items:end}
+.attendees-search .input,.attendees-search .select{width:100%}
+.attendee-list{display:grid;gap:18px}.attendee-card{padding:24px;overflow-wrap:anywhere}.attendee-card h2{margin-bottom:8px}.attendee-heading{display:flex;justify-content:space-between;align-items:flex-start;gap:12px;flex-wrap:wrap}
+.attendee-facts{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px;margin-top:18px}.attendee-facts dt{font-size:.9375rem;font-weight:800}.attendee-facts dd{margin:4px 0 0}
+.attendee-tools{padding:24px;margin-top:24px}.attendee-tools ul{padding-left:22px}.attendee-tools li{margin-top:12px}
+@media(max-width:720px){.attendees-search{grid-template-columns:1fr}.attendee-facts{grid-template-columns:1fr}.attendee-card{padding:20px}}
+</style>
+{% endblock styles %}
+{% block content %}
+<div class="bo-head"><div><p class="kicker">{{ organizer_name }}</p><h1 class="h-l">Attendees</h1><p>One entry per ticket. Email belongs to the Buyer.</p></div>{% if can_manage %}<a class="btn btn-line" href="/office/orders#complimentary">Issue complimentary ticket</a>{% endif %}</div>
+<form class="attendees-search paper" role="search" method="get" action="/office/attendees">
+  <div><label class="label" for="q">Search attendees</label><input class="input" id="q" name="q" type="search" value="{{ query }}" placeholder="Name, ticket code, order, or Buyer email"></div>
+  <div><label class="label" for="event">Event</label><select class="select" id="event" name="event"><option value="">All events</option>{% for event in events %}<option value="{{ event.id }}" {% if event.selected %}selected{% endif %}>{{ event.title }}</option>{% endfor %}</select></div>
+  <button class="btn" type="submit">Search</button>
+</form>
+{% if event_unavailable %}
+<section class="paper paper-pad" role="alert"><h2 class="h-m">Event unavailable</h2><p>This event is not available in this Organizer’s account. <a href="/office/attendees">View all attendees</a>.</p></section>
+{% elif load_failed %}
+<section class="paper paper-pad" role="alert"><h2 class="h-m">Attendees could not be loaded</h2><p>Try Search again. If the problem continues, contact your administrator.</p></section>
+{% else %}
+<p class="small muted" role="status">{{ attendees | length }} matching ticket{% if attendees | length != 1 %}s{% endif %}</p>
+<div class="attendee-list">
+{% for attendee in attendees %}
+<article class="paper attendee-card">
+  <div class="attendee-heading"><h2 class="h-m"><a href="/office/orders/{{ attendee.order_id }}#ticket-{{ attendee.ticket_id }}">{% if attendee.name %}{{ attendee.name }}{% else %}Unnamed attendee{% endif %}</a></h2><span class="status {% if attendee.admission_valid %}status-yellow{% else %}status-muted{% endif %}">{% if attendee.admission_valid %}Ticket valid{% else %}Admission invalid{% endif %}</span></div>
+  <p>{{ attendee.event_title }}</p>
+  <dl class="attendee-facts">
+    <div><dt>Ticket</dt><dd>{{ attendee.ticket_type }}<br><span class="num">{{ attendee.code }}</span><br>Status: {{ attendee.ticket_status }}{% if attendee.seat %}<br>Seat: {{ attendee.seat }}{% endif %}</dd></div>
+    <div><dt>Order / Buyer email</dt><dd><a href="/office/orders/{{ attendee.order_id }}">{{ attendee.order_number }}</a> · {{ attendee.order_status }}<br>{% if attendee.buyer_email %}{{ attendee.buyer_email }}{% else %}Anonymized{% endif %}</dd></div>
+    <div><dt>Check-in</dt><dd>{% if attendee.undone %}Check-in undone: {{ attendee.undone }}<br>Previously checked in: {{ attendee.checked }}{% elif attendee.checked %}Checked in: {{ attendee.checked }}{% else %}Not checked in{% endif %}<br><a href="/office/orders/{{ attendee.order_id }}#ticket-{{ attendee.ticket_id }}">Ticket details, answers and history</a></dd></div>
+  </dl>
+</article>
+{% else %}
+<section class="paper paper-pad"><h2 class="h-m">{% if query or selected_event %}No attendees match{% else %}No attendees yet{% endif %}</h2><p>{% if query or selected_event %}Try a different name, ticket code, order number or Buyer email, or <a href="/office/attendees">clear the filters</a>.{% else %}Attendees appear here when tickets are issued through checkout or complimentary issuance.{% endif %}</p>{% if can_manage %}<a href="/office/orders#complimentary">Issue a complimentary ticket</a> or <a href="/office/events">open Events</a>.{% endif %}</section>
+{% endfor %}
+</div>
+{% endif %}
+{% if can_manage and events | length > 0 %}
+<section class="paper attendee-tools"><h2 class="h-m">Export</h2><p>Exports contain all records for the event. Search does not limit the export.</p><ul>{% for event in events %}{% if not selected_event or event.selected %}<li><b>{{ event.title }}</b>: <a href="/office/events/{{ event.id }}/export/tickets.csv">Tickets and answers</a>, <a href="/office/events/{{ event.id }}/export/checkins.csv">Check-in history</a>, <a href="/office/events/{{ event.id }}/export/orders.csv">Orders</a></li>{% endif %}{% endfor %}</ul></section>
+{% endif %}
+{% endblock content %}

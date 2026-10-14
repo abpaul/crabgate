@@ -1,0 +1,308 @@
+{% extends "office/base.html" %}
+{% block title %}{% if is_new %}New Event{% else %}Edit Event{% endif %}{% endblock title %}
+{% block styles %}
+<style>
+  .editor { grid-template-columns: minmax(0, 1fr) 340px; }
+  .grid2, .grid3, .grid4 { display: grid; gap: 14px; margin-top: 18px; }
+  .grid2 { grid-template-columns: 1fr 1fr; }
+  .grid3, .grid4 { grid-template-columns: 2fr 1fr 1fr; }
+  .editor .field + .field { margin-top: 18px; }
+  .editor .grid2 .field + .field, .editor .grid3 .field + .field, .editor .grid4 .field + .field { margin-top: 0; }
+  .cover { display: grid; grid-template-columns: 240px 1fr; gap: 18px; margin-top: 16px; align-items: stretch; }
+  .cover img { width: 100%; height: 100%; object-fit: cover; border: 6px solid #fff; box-shadow: var(--shadow-sm); transform: rotate(-2deg); }
+  .tt-edit { border: 0; border-top: 2px dashed var(--line-strong); margin: 22px 0 0; padding: 18px 0 0; }
+  .tt-edit legend { float: left; width: 100%; padding: 0; margin-bottom: 12px; }
+  .tt-edit legend + * { clear: both; }
+  .publish { padding: 30px 22px 20px; }
+  .publish ul { padding-left: 22px; margin: 8px 0 18px; }
+  .publish li { margin: 6px 0; }
+  .editor .input:focus-visible, .editor .textarea:focus-visible, .editor select:focus-visible { outline: 3px solid var(--yellow); outline-offset: 2px; }
+  .editor [aria-invalid="true"] { border-color: var(--error); }
+  .editor select { appearance: auto; min-height: 48px; background: var(--paper); color: var(--ink); }
+  @media (max-width: 920px) { .editor { grid-template-columns: 1fr; } .editor aside { order: -1; } }
+  @media (max-width: 640px) {
+    .grid2, .grid3, .grid4 { grid-template-columns: 1fr 1fr; }
+    .grid3 .field:first-child, .grid4 .field:first-child { grid-column: 1 / -1; }
+    .grid2, .cover { grid-template-columns: 1fr; }
+    .cover img { height: 160px; }
+  }
+</style>
+{% endblock styles %}
+{% block content %}
+<div class="bo-head">
+  <div><p class="small"><a href="/office/events">Events</a></p><h1 class="h-l">{% if is_new %}New event{% else %}{{ event.title }}{% endif %}</h1></div>
+  {% if not is_new %}<div><a class="btn" href="/office/events/{{ event.id }}/messages">Buyer Messages</a> <span class="status {{ status_class }}">{{ status_label }}</span></div>{% endif %}
+</div>
+{% if error and not event_error and not ticket_error and not seat_error %}<div class="paper paper-pad" role="alert" style="border-left:8px solid var(--error);margin-bottom:24px">{{ error }}</div>{% endif %}
+<div class="split editor">
+  <div class="stack" style="--gap:32px">
+    <form id="details" class="stack" style="--gap:32px" method="post" action="{% if is_new %}/office/events{% else %}/office/events/{{ event.id }}{% endif %}">
+      <section class="paper paper-pad" aria-labelledby="d-h">
+        <span class="tape tape-c" aria-hidden="true"></span>
+        <h2 id="d-h" class="h-m">Details</h2>
+        {% if event_error %}<p class="small" role="alert" style="color:var(--error);font-weight:800;margin-top:14px">{{ event_error }}</p>{% endif %}
+        <div class="field" style="margin-top:18px"><label class="label" for="title">Event name</label><input class="input" id="title" name="title" value="{{ event.title }}" required maxlength="120"></div>
+        <div class="grid3">
+          <div class="field"><label class="label" for="date">Date</label><input class="input" id="date" name="date" type="date" value="{{ event.date }}" required></div>
+          <div class="field"><label class="label" for="start_time">Starts</label><input class="input" id="start_time" name="start_time" type="time" value="{{ event.start_time }}" required></div>
+          <div class="field"><label class="label" for="end_time">Ends</label><input class="input" id="end_time" name="end_time" type="time" value="{{ event.end_time }}" required><p class="hint">If this is earlier than the start, we treat it as the next day.</p></div>
+        </div>
+        <div class="field"><label class="label" for="timezone">Event time zone</label><select class="input" id="timezone" name="timezone" aria-describedby="zone-hint" required>{% for zone in zone_options %}<option value="{{ zone }}" {% if zone == event.timezone %}selected{% endif %}>{{ zone }}</option>{% endfor %}</select><p class="hint" id="zone-hint">Dates and times on this page use this time zone. When the clocks change, some local times don't exist.</p></div>
+        {% if not is_new %}<p class="small" id="time-preview" aria-live="polite">Saved time: {{ event.start_preview }} to {{ event.end_preview }} ({{ event.timezone }}).</p><label class="checkbox-label"><input type="checkbox" name="confirm_timezone_change" value="true" {% if event.confirm_timezone_change %}checked{% endif %}> I checked the event times after changing the time zone</label>{% else %}<p class="small" id="time-preview" aria-live="polite">Enter a date and time to preview the event time zone.</p>{% endif %}
+        <div class="grid2">
+          <div class="field"><label class="label" for="venue">Venue</label><input class="input" id="venue" name="venue" value="{{ event.venue }}" required></div>
+          <div class="field"><label class="label" for="address">Address</label><input class="input" id="address" name="address" value="{{ event.address }}" required></div>
+        </div>
+        <div class="field"><label class="label" for="description">About this event</label><textarea class="textarea" id="description" name="description" rows="5">{{ event.description }}</textarea><p class="hint">Plain text. Blank lines start new paragraphs.</p></div>
+      </section>
+      <section class="paper paper-pad" aria-labelledby="cap-h">
+        <h2 id="cap-h" class="h-m">Event capacity <span class="small muted" style="font-weight:700">Optional</span></h2>
+        <p class="small" style="margin:6px 0 14px;max-width:52ch">A limit on all tickets together, across every ticket type.</p>
+        <div class="grid2">
+          <div class="field"><label class="label" for="event_capacity">Most tickets in total</label><input class="input" id="event_capacity" name="event_capacity" type="text" inputmode="numeric" pattern="[0-9]*" value="{{ event.event_capacity }}"></div>
+          <div class="field"><label class="label" for="max_per_order">Most tickets per order</label><input class="input" id="max_per_order" name="max_per_order" type="text" inputmode="numeric" pattern="[0-9]+" value="{{ event.max_per_order }}" required></div>
+        </div>
+        <div class="field" style="margin-top:18px"><label class="checkbox-label"><input name="attendee_name_required" type="checkbox" value="true" {% if event.attendee_name_required %}checked{% endif %}> Require each attendee name</label></div>
+      </section>
+    </form>
+    {% if not is_new %}
+    <section class="paper paper-pad" id="embed" aria-labelledby="embed-heading">
+      <h2 id="embed-heading" class="h-m">Tickets on your website</h2>
+      <p class="small">These website permissions apply to every Event and Series for this organizer. Saving here changes the organizer-wide setting, not just this Event.</p>
+      <form method="post" action="/office/events/{{ event.id }}/embed-origins" style="margin-top:18px">
+        <div class="field">
+          <label class="label" for="embed-origins">Allowed website origins</label>
+          <textarea class="textarea" id="embed-origins" name="origins" rows="4" maxlength="8192" aria-describedby="embed-origins-hint{% if embed_error %} embed-origins-error{% endif %}"{% if embed_error %} aria-invalid="true"{% endif %}>{{ embed_origins }}</textarea>
+          <p class="hint" id="embed-origins-hint">Enter up to 16 exact HTTPS origins, one per line, such as https://example.com or https://www.example.com. Include a port only when your website uses it, such as https://example.com:8443. Each subdomain needs its own entry. Do not include a trailing slash, path, wildcard, query, fragment or credentials. Leave empty and save to block all iframe embedding again.</p>
+          {% if embed_error %}<p class="small" id="embed-origins-error" role="alert">{{ embed_error }}</p>{% endif %}
+        </div>
+        <button class="btn btn-line btn-sm" type="submit" style="margin-top:18px">Save website origins</button>
+      </form>
+      {% if embed_enabled %}<p class="small" style="margin-top:18px">Embedding is enabled on the saved website origins.</p>{% else %}<p class="small" style="margin-top:18px">Embedding is blocked. Save a valid website origin to enable it. Hosted links still work.</p>{% endif %}
+      <p class="small" id="embed-copy-hint" style="margin-top:18px">Select the snippet text and copy it with your keyboard or device menu. Paste the complete snippet into your website's HTML, including the link after the iframe. That link works if the iframe fails to load. CrabGate branding stays fixed. Buyer details and payment open on CrabGate outside the iframe.</p>
+      <div class="field" style="margin-top:18px">
+        <label class="label" for="event-embed-snippet">Single Event snippet</label>
+        <textarea class="textarea" id="event-embed-snippet" rows="5" readonly spellcheck="false" aria-describedby="embed-copy-hint">{{ event_embed_snippet }}</textarea>
+        <p class="small"><a href="{{ event_hosted_url }}" target="_top">Open this Event on CrabGate</a></p>
+        {% if event.status != "Published" %}<p class="hint">This Event is not Published. Tickets are unavailable until it is Published and sales are open.</p>{% endif %}
+      </div>
+      {% if series %}
+      <div class="field" style="margin-top:18px">
+        <label class="label" for="series-embed-snippet">Series date picker snippet</label>
+        <textarea class="textarea" id="series-embed-snippet" rows="5" readonly spellcheck="false" aria-describedby="embed-copy-hint series-embed-hint">{{ series_embed_snippet }}</textarea>
+        <p class="small"><a href="{{ series_hosted_url }}" target="_top">Open this Series on CrabGate</a></p>
+        <p class="hint" id="series-embed-hint">Buyers choose one existing future Published date, then tickets for that date. The picker does not create dates or choose a date for them. If no dates are available, it shows an unavailable message.</p>
+      </div>
+      {% endif %}
+    </section>
+    <section class="paper paper-pad" aria-labelledby="c-h">
+      <h2 id="c-h" class="h-m">Cover image <span class="small muted" style="font-weight:700">Optional</span></h2>
+      <div class="cover">
+        {% if event.has_cover %}<img src="/office/events/{{ event.id }}/cover" alt="Current event cover">{% else %}<div class="sticky-note">No cover image. The Shop shows a notice-board card with the date.</div>{% endif %}
+        {% if event.status != "Cancelled" %}<form class="dropzone" method="post" action="/office/events/{{ event.id }}/cover" enctype="multipart/form-data">
+          <label class="h-s" for="cover">Choose an image</label>
+          <p class="hint">JPG, PNG, or WebP under 3 MB.</p>
+          <input class="input" id="cover" name="cover" type="file" accept="image/jpeg,image/png,image/webp" {% if cover_error %}aria-invalid="true" aria-describedby="cover-error"{% endif %} required>
+          {% if cover_error %}<p id="cover-error" class="small" role="alert" style="color:var(--error);font-weight:800">{{ cover_error }}</p>{% endif %}
+          <button class="btn btn-line btn-sm" type="submit">Upload cover</button>
+        </form>{% endif %}
+      </div>
+    </section>
+    <section class="paper paper-pad" aria-labelledby="t-h" data-sales-zone="{{ event.timezone }}">
+      <h2 id="t-h" class="h-m">Ticket types</h2>
+      <p class="small">Sales window times use <strong>{{ event.timezone }}</strong>. Save event time zone changes before editing ticket types.</p>
+      {% if event.status == "Cancelled" %}<ul class="small">{% for type in ticket_types %}<li>{{ type.name }}, {{ type.price }}, {{ type.capacity }} places</li>{% endfor %}</ul>{% else %}
+      {% for type in ticket_types %}
+      <form method="post" action="/office/events/{{ event.id }}/ticket-types/{{ type.id }}">
+        <fieldset class="tt-edit">
+          <legend class="h-s">{{ type.name }}</legend>
+          {% if ticket_error and ticket_error_id == type.id %}<p class="small" role="alert" style="color:var(--error);font-weight:800">{{ ticket_error }}</p>{% endif %}
+          <div class="grid4">
+            <div class="field"><label class="label" for="name-{{ type.id }}">Name</label><input class="input" id="name-{{ type.id }}" name="name" value="{{ type.name }}" required></div>
+            <div class="field"><label class="label" for="price-{{ type.id }}">Price ({{ currency }})</label><input class="input" id="price-{{ type.id }}" name="price" inputmode="decimal" value="{{ type.price }}" required></div>
+            <div class="field"><label class="label" for="capacity-{{ type.id }}">Capacity</label><input class="input" id="capacity-{{ type.id }}" name="capacity" type="text" inputmode="numeric" pattern="[0-9]+" value="{{ type.capacity }}" required></div>
+          </div>
+          <div class="grid2">
+            <div class="field"><label class="label" for="open-{{ type.id }}">Sales window opens</label><input class="input" id="open-{{ type.id }}" name="sales_open" type="datetime-local" value="{{ type.sales_open }}"></div>
+            <div class="field"><label class="label" for="close-{{ type.id }}">Sales window closes</label><input class="input" id="close-{{ type.id }}" name="sales_close" type="datetime-local" value="{{ type.sales_close }}"><p class="hint">Defaults to when the event starts.</p></div>
+          </div>
+          <p class="small sales-preview" aria-live="polite">Enter a sales window to preview its local and UTC times.</p>
+          <button class="btn btn-line btn-sm" style="margin-top:18px" type="submit">Save ticket type</button>
+        </fieldset>
+      </form>
+      {% endfor %}
+      <form method="post" action="/office/events/{{ event.id }}/ticket-types">
+        <fieldset class="tt-edit">
+          <legend class="h-s">Add a ticket type</legend>
+          {% if ticket_error and ticket_error_id == "new" %}<p class="small" role="alert" style="color:var(--error);font-weight:800">{{ ticket_error }}</p>{% endif %}
+          <div class="grid4">
+            <div class="field"><label class="label" for="tt_name">Name</label><input class="input" id="tt_name" name="name" value="{{ new_type.name | default(value='') }}" required></div>
+            <div class="field"><label class="label" for="price">Price</label><div class="input-group"><span class="addon addon-l">{{ currency }}</span><input class="input" id="price" name="price" inputmode="decimal" value="{{ new_type.price | default(value='0') }}" required></div></div>
+            <div class="field"><label class="label" for="capacity">Capacity</label><input class="input" id="capacity" name="capacity" type="text" inputmode="numeric" pattern="[0-9]+" value="{{ new_type.capacity | default(value='') }}" required></div>
+          </div>
+          <div class="grid2">
+            <div class="field"><label class="label" for="sales_open">Sales window opens</label><input class="input" id="sales_open" name="sales_open" type="datetime-local" value="{{ new_type.sales_open | default(value='') }}"></div>
+            <div class="field"><label class="label" for="sales_close">Sales window closes</label><input class="input" id="sales_close" name="sales_close" type="datetime-local" value="{{ new_type.sales_close | default(value='') }}"><p class="hint">Defaults to when the event starts.</p></div>
+          </div>
+          <p class="small sales-preview" aria-live="polite">Enter a sales window to preview its local and UTC times.</p>
+          <button class="btn btn-line btn-sm" style="margin-top:18px" type="submit">Add ticket type</button>
+        </fieldset>
+      </form>
+      {% endif %}
+    </section>
+    <section class="paper paper-pad" id="seats" aria-labelledby="seats-heading">
+      <h2 id="seats-heading" class="h-m">Assigned seats</h2>{% if seat_error %}<p class="small" role="alert" style="color:var(--error);font-weight:800;margin-top:14px">{{ seat_error }}</p>{% endif %}
+      <p class="small">Add seats before the first sale. Once seats exist, buyers choose their exact seats. A sold or held seat can't be removed.</p>
+      {% for seat in seats %}<div class="tt-edit"><p class="h-s">{{ seat.section }}, Row {{ seat.row }}, Seat {{ seat.label }}</p><p class="small">{% if not seat.active %}Inactive{% elif seat.available %}Available{% else %}Sold or held{% endif %}</p>{% if seat.active and seat.available %}<form method="post" action="/office/events/{{ event.id }}/seats/{{ seat.id }}/deactivate"><button class="btn btn-line btn-sm" type="submit">Deactivate seat</button></form>{% endif %}</div>{% endfor %}
+      {% if event.status != "Cancelled" %}<form method="post" action="/office/events/{{ event.id }}/seats" style="margin-top:24px"><fieldset><legend class="h-s">Add seats</legend><div class="field"><label class="label" for="seat-type">Ticket type</label><select class="input" id="seat-type" name="ticket_type_id" required>{% for type in ticket_types %}<option value="{{ type.id }}" {% if seat_form and seat_form.ticket_type_id == type.id %}selected{% endif %}>{{ type.name }}</option>{% endfor %}</select></div><div class="grid2"><div class="field"><label class="label" for="seat-section">Section</label><input class="input" id="seat-section" name="section" value="{{ seat_form.section | default(value='') }}" required maxlength="60"></div><div class="field"><label class="label" for="seat-row">Row</label><input class="input" id="seat-row" name="row" value="{{ seat_form.row | default(value='') }}" required maxlength="40"></div></div><div class="field"><label class="label" for="seat-labels">Seat labels</label><textarea class="textarea" id="seat-labels" name="labels" rows="3" required aria-describedby="seat-labels-hint">{{ seat_form.labels | default(value='') }}</textarea><p class="hint" id="seat-labels-hint">Separate with commas or new lines. Add 1 to 100 seats at a time. Each ticket type needs enough capacity.</p></div><button class="btn btn-line btn-sm" type="submit" style="margin-top:18px">Add seats</button></fieldset></form>{% endif %}
+    </section>
+    <section class="paper paper-pad" id="questions" aria-labelledby="questions-heading">
+      <h2 id="questions-heading" class="h-m">Checkout questions</h2>
+      <p class="small">Ask buyers once per order or once for each attendee. Answers are private to you. If you reword a question later, earlier answers keep the wording the buyer saw.</p>
+      {% for question in questions %}<div class="tt-edit"><p class="h-s">{{ question.label }}</p><p class="small">{{ question.scope }}, {{ question.kind }}{% if question.required %}, required{% endif %}</p>{% if question.kind == "Choice" %}<p class="small">{{ question.options | join(sep=", ") }}</p>{% endif %}<form method="post" action="/office/events/{{ event.id }}/questions/{{ question.id }}/delete"><button class="btn btn-line btn-sm" type="submit">Remove question</button></form></div>{% endfor %}
+      {% if event.status != "Cancelled" %}<form method="post" action="/office/events/{{ event.id }}/questions" style="margin-top:24px"><fieldset><legend class="h-s">Add a question</legend><div class="field"><label class="label" for="question-label">Question</label><input class="input" id="question-label" name="label" required maxlength="160"></div><div class="grid2"><div class="field"><label class="label" for="question-scope">Ask</label><select class="input" id="question-scope" name="scope"><option value="Order">Once per order</option><option value="Attendee">Each attendee</option></select></div><div class="field"><label class="label" for="question-kind">Answer</label><select class="input" id="question-kind" name="kind"><option value="Text">Short text</option><option value="Choice">One choice</option><option value="Checkbox">Checkbox</option></select></div></div><div class="field"><label class="label" for="question-options">Choice options, one per line</label><textarea class="textarea" id="question-options" name="options" rows="4" aria-describedby="question-options-hint"></textarea><p class="hint" id="question-options-hint">Use only for One choice. Add 2 to 12 options.</p></div><label class="checkbox-label"><input type="checkbox" name="required" value="true"> Required</label><button class="btn btn-line btn-sm" type="submit" style="margin-top:18px">Add question</button></fieldset></form>{% endif %}
+    </section>
+    <section class="paper paper-pad" id="discounts" aria-labelledby="discounts-heading">
+      <h2 id="discounts-heading" class="h-m">Discount codes</h2>
+      <p class="small">Codes work for this event only. A buyer in checkout holds one use of a limited code. The code and amount stay with the order after payment.</p>
+      {% for code in discount_codes %}<div class="tt-edit"><p class="h-s num">{{ code.code }}, {{ code.value }}</p><p class="small">{% if code.active %}Active{% else %}Inactive{% endif %}, {{ code.used }} used{% if code.limit %} of {{ code.limit }}{% endif %}{% if code.starts %}, from {{ code.starts }}{% endif %}{% if code.ends %}, through {{ code.ends }}{% endif %}</p>{% if code.active %}<form method="post" action="/office/events/{{ event.id }}/discounts/{{ code.id }}/deactivate"><button class="btn btn-line btn-sm" type="submit">Deactivate code</button></form>{% endif %}</div>{% endfor %}
+      {% if event.status != "Cancelled" %}<form method="post" action="/office/events/{{ event.id }}/discounts" style="margin-top:24px"><fieldset><legend class="h-s">Add a code</legend><div class="grid2"><div class="field"><label class="label" for="discount-name">Code</label><input class="input" id="discount-name" name="code" required minlength="2" maxlength="32" pattern="[A-Za-z0-9-]+" autocomplete="off"></div><div class="field"><label class="label" for="discount-kind">Type</label><select class="input" id="discount-kind" name="kind"><option value="Percent">Percent</option><option value="Fixed">Fixed amount ({{ currency }})</option></select></div></div><div class="grid2"><div class="field"><label class="label" for="discount-value">Percent or amount</label><input class="input" id="discount-value" name="value" required inputmode="decimal"><p class="hint">Enter 20 for 20%, or 5.00 for 5 {{ currency }}.</p></div><div class="field"><label class="label" for="discount-limit">Most paid orders</label><input class="input" id="discount-limit" name="max_redemptions" type="number" min="1" placeholder="No limit"></div></div><div class="grid2"><div class="field"><label class="label" for="discount-start">Valid from</label><input class="input" id="discount-start" name="starts" type="date"><p class="hint">Optional. Uses {{ event.timezone }}.</p></div><div class="field"><label class="label" for="discount-end">Valid through</label><input class="input" id="discount-end" name="ends" type="date"><p class="hint">Optional. Uses {{ event.timezone }}.</p></div></div><button class="btn btn-line btn-sm" type="submit" style="margin-top:18px">Add code</button></fieldset></form>{% endif %}
+    </section>
+    <section class="paper paper-pad" id="copy" aria-labelledby="copy-heading">
+      <h2 id="copy-heading" class="h-m">Copy this event</h2>
+      <p class="small">We make a Draft copy on the date you pick, with the same details, ticket types, checkout questions, seats, and cover. Sales windows move with the date. Orders, Door Links, and discount codes stay with this event.</p>
+      <form method="post" action="/office/events/{{ event.id }}/copy" style="margin-top:18px">
+        <div class="field"><label class="label" for="copy-date">Date of the copy</label><input class="input" id="copy-date" name="date" type="date" required></div>
+        <button class="btn btn-line btn-sm" type="submit" style="margin-top:18px">Copy this event</button>
+      </form>
+    </section>
+    {% if not series and event.status != "Cancelled" %}
+    <section class="paper paper-pad" id="repeat" aria-labelledby="repeat-heading">
+      <h2 id="repeat-heading" class="h-m">Repeat this event</h2>
+      <p class="small">Start a Series from this event. We keep the next 8 dates in place and add more as dates pass. Each date is its own event with separate Orders and capacity, so you can edit or cancel one without changing the others.</p>
+      <p class="small" style="margin-top:10px">{% if event.status == "Published" %}{% if hosted_edition and hosted_checklist and not hosted_checklist.ready %}New dates blocked by <a href="/office/setup">Setup</a> stay Drafts and require explicit publication after the checks pass.{% else %}New dates can go on sale automatically if local times, ticket sales windows and Setup checks pass.{% endif %}{% else %}New dates start as Drafts. If you want them on sale by themselves, publish this event before you start the Series.{% endif %}</p>
+      <form method="post" action="/office/events/{{ event.id }}/repeat" style="margin-top:18px">
+        <div class="grid2">
+          <div class="field"><label class="label" for="repeat-frequency">Repeats</label><select class="input" id="repeat-frequency" name="frequency"><option value="Weekly"{% if repeat_form.frequency == "Weekly" %} selected{% endif %}>Every week</option><option value="Fortnightly"{% if repeat_form.frequency == "Fortnightly" %} selected{% endif %}>Every 2 weeks</option><option value="Monthly"{% if repeat_form.frequency == "Monthly" %} selected{% endif %}>Every month on the {{ monthly_position }}</option>{% if repeat_form.frequency not in ["Weekly", "Fortnightly", "Monthly"] %}<option value="{{ repeat_form.frequency }}" selected>{{ repeat_form.frequency }} (choose a supported repeat)</option>{% endif %}</select></div>
+          <div class="field"><label class="label" for="repeat-end">End date <span class="opt">Optional</span></label><input class="input" id="repeat-end" name="end_date" type="date" value="{{ repeat_form.end_date }}" aria-describedby="repeat-end-hint"><p class="hint" id="repeat-end-hint">Leave empty to keep repeating until you stop it.</p></div>
+        </div>
+        <button class="btn btn-line btn-sm" type="submit" formmethod="get" formaction="/office/events/{{ event.id }}#repeat" style="margin-top:18px">Preview dates</button>
+        <button class="btn btn-line btn-sm" type="submit" style="margin-top:18px">Repeat this event</button>
+      </form>
+      <h3 class="h-s" style="margin-top:18px">Upcoming date preview</h3>
+      <p class="small">This saved event ({{ event.date }}) already exists. The preview below creates nothing. Save event changes before previewing.</p>
+      <p class="small">Monthly repeats keep the weekday position: 12 January 2027 → 9 February → 9 March are all second Tuesdays. A fifth weekday becomes last: 29 January 2027 → 26 February → 26 March are last Fridays.</p>
+      {% if repeat_error %}<p class="small" role="alert">{{ repeat_error }}</p>{% if repeat_form.end_date %}<p class="small">Submitted end date: {{ repeat_form.end_date }}</p>{% endif %}{% endif %}
+      {% if repeat_preview | length > 0 %}<ul class="small" style="margin-top:10px">{% for date in repeat_preview %}<li>{{ date.date }} · {{ date.start_time }}–{{ date.end_time }} {{ date.timezone }} · {{ date.status }}</li>{% endfor %}</ul>{% elif not repeat_error %}<p class="small">No new dates before the end date.</p>{% endif %}
+      <p class="hint">The eight-date target includes this event when it is still in the future. Local times, ticket sales windows and current Setup readiness are checked when each date is created. Dates needing correction or blocked by readiness require review and explicit publication.</p>
+    </section>
+    {% endif %}
+    {% endif %}
+  </div>
+  <aside class="sticky stack" style="--gap:26px">
+    <section class="publish paper topband" aria-labelledby="p-h">
+      <span class="pin" aria-hidden="true"></span>
+      <h2 id="p-h" class="h-s" style="margin-top:6px">{% if is_new %}Draft event{% else %}{{ status_label }}{% endif %}</h2>
+      <p class="small" style="margin:6px 0 16px">{% if is_new %}Save the Details, then add a ticket type.{% elif event.status == "Draft" %}Only members can see this event.{% elif event.status == "Published" %}Buyers can see this event in the Shop.{% else %}This event is cancelled. Sales have stopped.{% endif %}</p>
+      {% if is_new or event.status == "Draft" %}<p class="small" style="font-weight:800">To publish:</p><ul class="small"><li>{% if is_new or has_unsaved_edits %}○{% else %}✓{% endif %} Save the event details{% if is_new %} (first){% endif %}.</li><li>{% if not is_new and ticket_types | length > 0 %}✓{% else %}○{% endif %} Add at least one ticket type.</li><li>{% if not is_new and event.starts_future %}✓{% else %}○{% endif %} Set the event date in the future.</li>{% if hosted_edition %}{% if hosted_checklist %}<li>{% if hosted_checklist.verified %}✓{% else %}○{% endif %} Verify the organizer email.</li><li>{% if hosted_checklist.subscription %}✓{% else %}○{% endif %} Activate the <a href="/office/setup">Subscription</a> ({{ hosted_checklist.subscription_status }}).</li><li>{% if hosted_checklist.stripe_tested %}✓{% else %}○{% endif %} Pass the Stripe key check in <a href="/office/setup">Setup</a>.</li><li>{% if hosted_checklist.webhook_tested %}✓{% else %}○{% endif %} Pass the webhook check in <a href="/office/setup">Setup</a>.</li>{% else %}<li>Activate the <a href="/office/setup">Subscription</a> and pass the Stripe key and webhook checks in <a href="/office/setup">Setup</a>.</li>{% endif %}{% endif %}</ul><p class="small" id="publish-note">Save your changes first. Publishing uses the last saved version.</p>{% endif %}
+      {% if is_new or event.status != "Cancelled" %}<button class="btn btn-block" type="submit" form="details">{% if is_new %}Create Draft event{% else %}Save changes{% endif %}</button>{% endif %}
+      {% if not is_new %}
+      {% if event.status == "Draft" %}<form id="publish-form" method="post" action="/office/events/{{ event.id }}/publish" style="margin-top:14px"><button class="btn btn-block" type="submit" {% if ticket_types | length == 0 or not event.starts_future or has_unsaved_edits or (hosted_edition and not hosted_checklist.ready) %}disabled aria-describedby="publish-note"{% endif %}>Publish event</button></form>{% endif %}
+      {% if event.status == "Published" and not event.has_sales %}<form method="post" action="/office/events/{{ event.id }}/draft" style="margin-top:14px"><button class="btn btn-line btn-block" type="submit">Return to Draft</button></form>{% endif %}
+      {% if event.status == "Published" %}<p style="margin-top:14px"><a class="small" href="/events/{{ event.id }}">View in Shop</a></p>{% endif %}
+      {% if event.status == "Cancelled" %}<p class="small">Sales are closed. Refunds and cancellation notices run in the background and can take several minutes. Review each Order for progress.</p><a href="/office/orders?event={{ event.id }}">View Order progress</a><form method="post" action="/office/events/{{ event.id }}/cancel"><button class="btn btn-line btn-block" type="submit">Retry pending or failed cancellation work</button></form>{% endif %}
+      {% if event.status == "Published" %}<details style="margin-top:20px"><summary>Cancel event</summary><p class="small" style="margin:12px 0">This stops sales immediately and queues refunds and cancellation notices for every order. Checked-in tickets stay on record.</p><form method="post" action="/office/events/{{ event.id }}/cancel"><button class="btn btn-line btn-block" type="submit">Yes, cancel this event</button></form></details>{% endif %}
+      {% endif %}
+    </section>
+    {% if series %}
+    <section class="paper paper-pad" id="series" aria-labelledby="series-heading">
+      <h2 id="series-heading" class="h-s">Series</h2>
+      <p class="small" style="margin-top:6px">{{ series.rule }}.</p>
+      {% if series.frequency == "Monthly" %}<p class="small" style="margin-top:10px">Monthly repeats keep the weekday position: 12 January 2027 → 9 February → 9 March are second Tuesdays. A fifth weekday becomes last: 29 January 2027 → 26 February → 26 March are last Fridays.</p>{% endif %}
+      {% if series.reviews | length > 0 %}
+      <p class="small" style="margin-top:10px">{{ series.reviews | length }} Series dates need review. <a href="/office/events#review-heading">See causes and review dates</a>. Fixing times or Setup keeps existing Drafts unpublished.</p>
+      {% endif %}
+      <details style="margin-top:12px"><summary>Upcoming Events and saved exceptions (unchanged)</summary>
+        {% if series.existing | length > 0 %}<ul class="small">{% for date in series.existing %}<li><a href="/office/events/{{ date.event_id }}">{{ date.date }}</a> · {{ date.start_time }}–{{ date.end_time }} {{ date.timezone }} · {{ date.status }}</li>{% endfor %}</ul>{% else %}<p class="small">No upcoming Events exist.</p>{% endif %}
+        {% for date in series.reviews %}{% if not date.event_id %}<p class="small">{{ date.date }} · {{ date.start_time }}–{{ date.end_time }} {{ date.timezone }} · Needs correction (saved exception): {{ date.reason }}</p>{% endif %}{% endfor %}
+      </details>
+      {% if series.active %}
+      <p class="small" style="margin-top:10px">{{ series.future_dates }} future {% if series.future_dates == 1 %}date exists{% else %}dates exist{% endif %}. We keep the next 8 in place. Editing this date changes only this date.</p>
+      <details style="margin-top:12px"><summary>Next dates not yet created</summary>
+        <p class="small">With the saved Series setup, as space opens in the eight-date target:</p>
+        {% if series.upcoming | length > 0 %}<ul class="small">{% for date in series.upcoming %}<li>{{ date.date }} · {{ date.start_time }}–{{ date.end_time }} {{ date.timezone }} · {{ date.status }}</li>{% endfor %}</ul>{% else %}<p class="small">No new dates before the end date.</p>{% endif %}
+      </details>
+      <details style="margin-top:12px"><summary>Preview using this date's saved setup</summary>
+        <p class="small">Only dates not yet created would use these times and timezone. Save changes to this event first. Preview creates nothing.</p>
+        {% if series.proposed | length > 0 %}<ul class="small">{% for date in series.proposed %}<li>{{ date.date }} · {{ date.start_time }}–{{ date.end_time }} {{ date.timezone }} · {{ date.status }}</li>{% endfor %}</ul>{% else %}<p class="small">No new dates before the end date.</p>{% endif %}
+        <p class="hint">Local times, ticket sales windows and current Setup readiness are checked when created. This preview does not promise publication. Existing Drafts and corrected exceptions require explicit publication.</p>
+      </details>
+      <form method="post" action="/office/events/{{ event.id }}/series/setup" style="margin-top:16px"><button class="btn btn-line btn-sm" type="submit" aria-describedby="series-setup-hint">Use this date's setup for future dates</button></form>
+      <p class="hint" id="series-setup-hint" style="margin-top:6px">Dates we create from now on copy this event's details, ticket types, questions, seats, and cover. Existing Events, Orders, capacity and saved exception snapshots stay as they are. The repeat weekday and end date stay the same.</p>
+      <form method="post" action="/office/events/{{ event.id }}/series/stop" style="margin-top:16px"><button class="btn btn-line btn-sm" type="submit" aria-describedby="series-stop-hint">Stop repeating</button></form>
+      <p class="hint" id="series-stop-hint" style="margin-top:6px">We stop creating dates. Every existing Event, Order, date and saved exception stays intact.</p>
+      {% else %}
+      <p class="small" style="margin-top:10px">This Series has stopped, so we won't create more dates. Every existing Event, Order, date and saved exception stays intact.</p>
+      {% endif %}
+    </section>
+    {% endif %}
+  </aside>
+</div>
+<script>
+(() => {
+  const form = document.getElementById('details');
+  const publish = document.querySelector('#publish-form button');
+  if (publish) form.addEventListener('input', () => {
+    publish.disabled = true;
+    document.getElementById('publish-note').textContent = 'Save your changes before publishing this Event.';
+  });
+  const date = document.getElementById('date');
+  const start = document.getElementById('start_time');
+  const end = document.getElementById('end_time');
+  const zone = document.getElementById('timezone');
+  const preview = document.getElementById('time-preview');
+  function resolve(localDate, localTime, zoneName = zone.value) {
+    const wall = Date.parse(`${localDate}T${localTime}:00Z`);
+    const formatter = new Intl.DateTimeFormat('en-GB', {
+      timeZone: zoneName, year: 'numeric', month: '2-digit', day: '2-digit',
+      hour: '2-digit', minute: '2-digit', hourCycle: 'h23', timeZoneName: 'short'
+    });
+    const parts = instant => Object.fromEntries(formatter.formatToParts(new Date(instant)).map(part => [part.type, part.value]));
+    const offsets = new Set([wall - 86400000, wall, wall + 86400000].map(instant => {
+      const local = parts(instant);
+      return Date.UTC(Number(local.year), Number(local.month) - 1, Number(local.day), Number(local.hour), Number(local.minute)) - instant;
+    }));
+    const matches = [...offsets].map(offset => wall - offset).filter(instant => {
+      const local = parts(instant);
+      return `${local.year}-${local.month}-${local.day}` === localDate && `${local.hour}:${local.minute}` === localTime;
+    });
+    if (matches.length !== 1) return matches.length ? 'occurs twice when clocks change; choose another time' : 'does not exist when clocks change; choose another time';
+    return `${formatter.format(new Date(matches[0]))}, ${new Date(matches[0]).toISOString().slice(0, 16).replace('T', ' ')} UTC`;
+  }
+  function updatePreview() {
+    if (!date.value || !start.value || !end.value) return;
+    let endDate = date.value;
+    if (end.value <= start.value) {
+      const next = new Date(`${date.value}T12:00:00Z`);
+      next.setUTCDate(next.getUTCDate() + 1);
+      endDate = next.toISOString().slice(0, 10);
+    }
+    preview.textContent = `Starts: ${resolve(date.value, start.value)}. Ends: ${resolve(endDate, end.value)}. ${endDate !== date.value ? 'Ends the next day.' : ''}`;
+  }
+  for (const field of [date, start, end, zone]) field.addEventListener('input', updatePreview);
+  const salesZone = document.querySelector('[data-sales-zone]')?.dataset.salesZone;
+  for (const output of document.querySelectorAll('.sales-preview')) {
+    const form = output.closest('form');
+    const open = form.querySelector('[name="sales_open"]');
+    const close = form.querySelector('[name="sales_close"]');
+    const updateSales = () => {
+      const show = field => field.value ? resolve(field.value.slice(0, 10), field.value.slice(11, 16), salesZone) : 'Not set';
+      output.textContent = `Opens: ${show(open)}. Closes: ${show(close)}. Time zone: ${salesZone}.`;
+    };
+    open.addEventListener('input', updateSales);
+    close.addEventListener('input', updateSales);
+    updateSales();
+  }
+})();
+</script>
+{% endblock content %}

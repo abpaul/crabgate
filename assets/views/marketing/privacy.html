@@ -1,0 +1,66 @@
+{% extends "marketing/base.html" %}
+{% block title %}Privacy | CrabGate{% endblock title %}
+{% block description %}What CrabGate stores, where it lives, who helps us run it, and how to get your data out or deleted. No tracking and no ads.{% endblock description %}
+{% block main %}
+<main>
+  <section class="wrap lp-hero">
+    <p class="kicker">Privacy</p>
+    <h1 class="h-xl lp-h1">We keep what the shop needs. <mark>Nothing else.</mark></h1>
+    <p class="lp-sub">No tracking, no ads, and no selling of data. Here's what we store, where it lives, and how you get it out.</p>
+    <p class="micro">Last updated 9 October 2026.</p>
+  </section>
+
+  <section class="wrap lp-sec legal" aria-label="Privacy policy">
+    <h2 class="h-m" id="who">Who we are</h2>
+    <p>CrabGate is run by ALPLUS TECHNOLOGIES S.R.L., a company registered in Romania. For anything about your data, email <a href="mailto:hello@crabgate.com?subject=Privacy">hello@crabgate.com</a>. A person reads it.</p>
+    <p>Company details: ALPLUS TECHNOLOGIES S.R.L., registration number (CUI) 55013997, trade register number J2026041446003, registered at Bd. Dâmbovița, nr. 60, sc. A, et. 4, ap. 14, Timișoara, Timiș, Romania.</p>
+
+    <h2 class="h-m" id="roles">Two kinds of people, two roles</h2>
+    <p><b>Organizers.</b> If you sign up to sell tickets, we decide how your account details are used. In data protection terms we're the controller.</p>
+    <p><b>Buyers and attendees.</b> If you buy a ticket from a shop on CrabGate, the organizer of that event decides how your details are used. We store them on the organizer's behalf, as their processor. The organizer is the first person to ask about your ticket or your data, and we help them answer.</p>
+
+    <h2 class="h-m" id="what">What we store</h2>
+    <p><b>About organizers and their team:</b> your organizer name, your shop address, the email address of each Admin and Door Staff member, your subscription status, and the note about your next event if you leave one when you sign up.</p>
+    <p><b>About buyers and attendees:</b> the buyer's email address, the name on each ticket, answers to any questions the organizer asks at checkout, the order, the tickets, and when a ticket was checked in at the door.</p>
+    <p><b>Card details:</b> we never see or store them. Payments happen on Stripe's pages. Ticket money goes straight to the organizer's own Stripe account.</p>
+    <p><b>Technical records:</b> our server and our network provider process IP addresses and request details to deliver pages, stop abuse, and fix problems.</p>
+
+    <h2 class="h-m" id="cookies">Cookies</h2>
+    <p>We set one cookie, and only when you sign in. It keeps you signed in to the Back Office or the Door. There are no analytics cookies, no advertising cookies, and no third-party trackers, so there's no cookie banner.</p>
+
+    <h2 class="h-m" id="email">Email</h2>
+    <p>We send the emails the shop needs: sign-in links, tickets, receipts, changes to an event, refunds, and notices about your subscription. We don't send marketing email to buyers.</p>
+
+    <h2 class="h-m" id="why">Why we're allowed to</h2>
+    <p>We use your details to provide the service you signed up for, to keep it secure, and to meet legal duties such as keeping invoices. For buyers and attendees, we act on the organizer's instructions.</p>
+
+    <h2 class="h-m" id="where">Where it lives and who helps us</h2>
+    <p>CrabGate runs on a server in Stockholm, Sweden. Backups are stored in the same region. Each organizer has its own database, and personal details in it are encrypted with a key that belongs to that organizer alone.</p>
+    <p>These companies help us run the service:</p>
+    <ul class="ticks">
+      <li><b>Amazon Web Services:</b> the server and the backups, in Sweden.</li>
+      <li><b>Cloudflare:</b> the network in front of the site, protection against attacks, and the sending of our emails.</li>
+      <li><b>Stripe:</b> payment of your CrabGate subscription. Organizers also connect their own Stripe account to sell tickets.</li>
+      <li><b>Purelymail:</b> the inbox for hello@crabgate.com.</li>
+    </ul>
+    <p>Cloudflare and Stripe may process data outside the European Economic Area. They do so under the safeguards that European law requires.</p>
+
+    <h2 class="h-m" id="access">Who at CrabGate can see your data</h2>
+    <p>Nobody, by default. We can look inside an organizer's shop only when an Admin of that shop gives us access. The Admin sets how long it lasts and can take it back at any time. Everything we do while we have access is logged, and the Admin can read the log.</p>
+
+    <h2 class="h-m" id="how-long">How long we keep it</h2>
+    <p>We keep an organizer's live shop data while the subscription is active or in its 14-day payment grace period. After the subscription lapses, the shop can still check people in and Admins can export its data until deletion starts 90 days after lapse. We email the Admins 30 days, 7 days, and 1 day before that deadline.</p>
+    <p>Backup copies may remain after live data is deleted. Removing live access and the live encryption key does not make older backups immediately unrecoverable: backups can also contain the key information needed for recovery. We have not yet verified a maximum retention period for production backup copies.</p>
+    <p>An organizer can remove a buyer's personal details from an order at any time. We keep invoices for our own subscription for as long as tax law requires.</p>
+
+    <h2 class="h-m" id="rights">Your rights</h2>
+    <p>You can ask for a copy of your data, ask us to correct or delete it, and object to how it's used. An organizer's Admins can export the shop's data from the Back Office before deletion starts, including during the 90 days after subscription lapse.</p>
+    <p>If you bought a ticket, ask the organizer first. If you can't reach them, email us and we'll pass your request on.</p>
+    <p>If you think we've handled your data badly, tell us and we'll put it right. You can also complain to the Romanian data protection authority (ANSPDCP), or to the authority in your own country.</p>
+
+    <h2 class="h-m" id="changes">Changes to this page</h2>
+    <p>If we change something that matters, we'll email organizers before it takes effect and update the date at the top.</p>
+    <p class="after">See also our <a href="/terms">terms</a>.</p>
+  </section>
+</main>
+{% endblock main %}

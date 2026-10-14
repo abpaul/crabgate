@@ -1,0 +1,98 @@
+{% extends "shop/base.html" %}
+{% block title %}{{ event.title }}{% endblock title %}
+{% block top_link %}<a href="/">All events</a>{% endblock top_link %}
+{% block head %}<script type="application/ld+json">{{ structured_data | safe }}</script>{% endblock head %}
+{% block styles %}
+<style>
+  .page { padding-block: 24px 80px; }
+  .poster { padding: 22px 22px 34px; transform: rotate(-1.2deg); }
+  .poster figure { position: relative; }
+  .poster img { width: 100%; aspect-ratio: 16 / 9; object-fit: cover; object-position: 50% 40%; }
+  .poster .body { padding: 26px 10px 0; }
+  .poster h1 { margin-top: 8px; font-size: clamp(2.2rem, 5vw, 4.5rem); }
+  .when { display: flex; flex-wrap: wrap; align-items: center; gap: 10px 22px; margin-top: 22px; font-size: 1.375rem; line-height: 1.35; }
+  .datebox { border: 3px solid var(--deep); border-radius: 6px; padding: 6px 14px; font-weight: 900; color: var(--deep); }
+  .where { margin-top: 12px; font-size: 1.25rem; }
+  .card { padding: 42px 28px 26px; }
+  .card .lede { margin: 8px 0 18px; }
+  .fine { margin-top: 14px; font-size: 1rem; color: var(--muted); text-align: center; }
+  .about { margin-top: 76px; transform: rotate(.6deg); max-width: 720px; }
+  .about .h-m { margin-bottom: 12px; }
+  .quantity-input { width: 92px; height: 64px; border: 2px solid var(--ink); border-radius: 6px; text-align: center; }
+  .js .quantity-input { display: none; }
+  .stepper[hidden] { display: none; }
+  .js .stepper[hidden] { display: flex; }
+  .no-cover { min-height: 280px; padding: 34px; background: var(--yellow-pale); display: grid; place-items: center; border-top: 10px solid var(--yellow); }
+  .seats { display: grid; grid-template-columns: repeat(auto-fit, minmax(130px, 1fr)); gap: 8px; margin-top: 14px; }
+  .tt-seated { display: block; }
+  .seat { display: flex; align-items: center; gap: 8px; padding: 10px; border: 2px solid var(--line-strong); border-radius: 5px; font-size: .875rem; cursor: pointer; }
+  .seat:has(input:checked) { border-color: var(--deep); background: var(--yellow-pale); }
+  .seat:has(input:focus-visible) { outline: 3px solid var(--deep); outline-offset: 2px; }
+  .seat:has(input:disabled) { opacity: .55; cursor: not-allowed; }
+  .no-cover .day { font-size: clamp(5rem, 15vw, 9rem); font-weight: 900; color: var(--deep); line-height: 1; }
+  @media (max-width: 920px) {
+    .page { padding-block: 22px 56px; }
+    .left { display: contents; }
+    .poster { order: 1; padding: 12px 12px 22px; transform: rotate(-.8deg); }
+    .poster .tape { width: 80px; height: 24px; }
+    .poster img { aspect-ratio: 2 / 1; }
+    .poster .body { padding: 14px 4px 0; }
+    .poster .kicker { font-size: .875rem; }
+    .poster h1 { font-size: clamp(2rem, 9vw, 3rem); margin-top: 4px; }
+    .when { margin-top: 12px; font-size: 1.0625rem; gap: 8px 12px; }
+    .datebox { padding: 2px 10px; border-width: 2px; }
+    .where { margin-top: 6px; font-size: 1.0625rem; }
+    .sticky { order: 2; }
+    .card { padding: 32px 18px 20px; }
+    .card .h-m { font-size: 1.625rem; }
+    .card .lede { font-size: 1rem; margin: 4px 0 12px; }
+    .tt { padding: 10px 0; }
+    .about { order: 3; margin-top: 24px; }
+  }
+</style>
+{% endblock styles %}
+{% block content %}
+<main class="wrap split page">
+  <div class="left">
+    <article class="poster paper" aria-labelledby="title">
+      <span class="tape tape-l" aria-hidden="true"></span><span class="tape tape-r" aria-hidden="true"></span>
+      {% if event.has_cover %}<figure><img src="/events/{{ event.id }}/cover" alt="Event cover" width="1200" height="800"></figure>{% else %}<div class="no-cover" aria-hidden="true"><span class="day">{{ event.day }}</span></div>{% endif %}
+      <div class="body">
+        <p class="kicker">{{ organizer_name }} presents</p>
+        <h1 id="title" class="h-xl">{{ event.title }}</h1>
+        <p class="when"><span class="datebox">{{ event.formatted_date }}</span> <span>{{ event.start_time }} to {{ event.end_time }} <span data-event-zone="{{ event.timezone }}" data-zone-label="{{ event.zone_label }}"></span></span></p>
+        <p class="where">{{ event.venue }}, {{ event.address }}. <a href="{{ directions_url }}">Get directions</a></p>
+      </div>
+    </article>
+    {% if description_paragraphs | length > 0 %}<section class="about paper paper-pad" aria-labelledby="about-h"><span class="tape tape-c" aria-hidden="true"></span><h2 id="about-h" class="h-m">About this event</h2><div class="prose">{% for paragraph in description_paragraphs %}<p>{{ paragraph }}</p>{% endfor %}</div></section>{% endif %}
+  </div>
+  <div class="sticky">
+    {% if purchase_available %}<form class="card paper topband" data-tickets data-currency="{{ currency }}" method="post" action="/checkout" aria-labelledby="tickets-h">{% else %}<section class="card paper topband" aria-labelledby="tickets-h">{% endif %}
+      <span class="pin" aria-hidden="true"></span>
+      {% if purchase_available %}<input type="hidden" name="event_id" value="{{ event.id }}">{% endif %}
+      <h2 id="tickets-h" class="h-m">{% if purchase_available %}Pick your tickets.{% else %}Ticket sales{% endif %}</h2>
+      <p class="lede">{% if purchase_available %}They arrive by email right away, and you show the code at the door.{% else %}{{ sales_notice }}{% endif %}</p>
+      {% for type in ticket_types %}
+      <div class="tt {% if type.state != "on-sale" %}out{% endif %} {% if assigned_seating %}tt-seated{% endif %}" data-price="{{ type.price_cents }}" data-max="{{ type.max }}">
+        <div><h3 class="tt-name">{{ type.name }}</h3><p class="tt-price">{{ type.price }}{% if type.low_stock %} <span class="circled">{{ type.remaining }} left</span>{% endif %}</p></div>
+        {% if assigned_seating %}
+        {% if type.state == "on-sale" %}<fieldset style="width:100%;margin-top:10px;border:0;padding:0"><legend class="sr-only">Choose {{ type.name }} seats</legend><div class="seats">{% for seat in type.seats %}<label class="seat"><input type="checkbox" name="seat_{{ seat.id }}" value="1" data-seat {% if not seat.available %}disabled{% endif %}><span>{{ seat.section }}, Row {{ seat.row }}, Seat {{ seat.label }}{% if not seat.available %}, unavailable{% endif %}</span></label>{% endfor %}</div>{% if type.seats | length == 0 %}<p class="hint">No seats available yet.</p>{% endif %}</fieldset>
+        {% elif type.state == "sold-out" %}<span class="stamp">Sold out</span>{% elif type.state == "coming-soon" %}<span class="stamp">Coming soon</span>{% else %}<span class="stamp">Sales ended</span>{% endif %}
+        {% elif type.state == "on-sale" %}
+        <div class="quantity">
+          <label class="sr-only" for="quantity-{{ type.id }}">{{ type.name }} tickets</label>
+          <input class="quantity-input" id="quantity-{{ type.id }}" name="quantity_{{ type.id }}" type="number" min="0" max="{{ type.max }}" value="0" data-quantity>
+          <div class="stepper" role="group" aria-label="{{ type.name }} tickets" hidden><button type="button" data-step="-1" aria-label="Remove one {{ type.name }} ticket">−</button><output aria-live="polite">0</output><button type="button" data-step="1" aria-label="Add one {{ type.name }} ticket">+</button></div>
+        </div>
+        {% elif type.state == "sold-out" %}<span class="stamp">Sold out</span>
+        {% elif type.state == "coming-soon" %}<span class="stamp">Coming soon</span>
+        {% else %}<span class="stamp">Sales ended</span>{% endif %}
+      </div>
+      {% endfor %}
+      {% if purchase_available %}<div class="field" style="margin-top:18px"><label class="label" for="discount-code">Discount code <span class="muted">Optional</span></label><input class="input" id="discount-code" name="discount_code" autocomplete="off" maxlength="32" pattern="[A-Za-z0-9-]{2,32}"></div>
+      <div class="total"><span data-count>0 tickets</span><span class="amount hl-under" data-total aria-live="polite">{{ currency }} 0</span></div><button class="btn btn-block" type="submit">Continue</button><p class="fine">You pay on the next step. No account needed.</p>{% endif %}
+    {% if purchase_available %}</form>{% else %}</section>{% endif %}
+  </div>
+</main>
+{% endblock content %}
+{% block scripts %}<script src="/static/shared/stepper.js" defer></script><script src="/static/shared/timezone.js" defer></script>{% endblock scripts %}

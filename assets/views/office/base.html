@@ -1,0 +1,50 @@
+<!doctype html>
+<html lang="en-IE">
+<head><link rel="icon" href="/favicon.ico" sizes="32x32"><link rel="icon" type="image/svg+xml" href="/static/shared/favicon.svg"><link rel="apple-touch-icon" href="/apple-touch-icon.png">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex">
+<title>{% block title %}Back Office{% endblock title %} | {{ organizer_name }} | CrabGate</title>
+<link rel="preload" href="/static/shared/figtree-latin-wght.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="stylesheet" href="/static/shared/crabgate.css">
+{% block styles %}{% endblock styles %}
+</head>
+<body class="board">
+<div class="bo">
+  <aside class="bo-side" aria-label="Back Office">
+    <a class="brand" href="/office/events"><img src="/static/shared/crabgate-mark-small.svg" alt="" width="40" height="40">CrabGate</a>
+    <div class="bo-org">Organizer<b>{{ organizer_name }}</b></div>
+    <nav aria-label="Main"><ul class="bo-nav">
+      <li><a href="/office/events" {% if active == "events" %}aria-current="page"{% endif %}>Events</a></li>
+      <li><a href="/office/attendees" {% if active == "attendees" %}aria-current="page"{% endif %}>Attendees</a></li>
+      <li><a href="/office/orders" {% if active == "orders" %}aria-current="page"{% endif %}>Orders</a></li>
+      <li><a href="/office/door" {% if active == "door" %}aria-current="page"{% endif %}>Door and members</a></li>
+      <li><a href="/office/setup" {% if active == "setup" %}aria-current="page"{% endif %}>Setup</a></li>
+      <li><a href="/">View Shop</a></li>
+      <li><form method="post" action="/office/sign-out"><button type="submit">Sign out</button></form></li>
+    </ul></nav>
+    <p class="me">Signed in as Admin.</p>
+  </aside>
+  <div>
+    <header class="bo-mobilebar">
+      <div class="row"><a class="brand" href="/office/events"><img src="/static/shared/crabgate-mark-small.svg" alt="" width="32" height="32">CrabGate</a><span class="orgname">{{ organizer_name }}</span></div>
+      <nav aria-label="Main"><ul class="bo-nav">
+        <li><a href="/office/events" {% if active == "events" %}aria-current="page"{% endif %}>Events</a></li>
+        <li><a href="/office/attendees" {% if active == "attendees" %}aria-current="page"{% endif %}>Attendees</a></li>
+      <li><a href="/office/orders" {% if active == "orders" %}aria-current="page"{% endif %}>Orders</a></li>
+        <li><a href="/office/door" {% if active == "door" %}aria-current="page"{% endif %}>Door and members</a></li>
+        <li><a href="/office/setup" {% if active == "setup" %}aria-current="page"{% endif %}>Setup</a></li>
+        <li><a href="/">View Shop</a></li>
+        <li><form method="post" action="/office/sign-out"><button type="submit">Sign out</button></form></li>
+      </ul></nav>
+    </header>
+    <main class="bo-main"><aside id="master-key-banner" class="paper" role="alert" hidden style="padding:18px 22px;margin-bottom:24px;border-left:8px solid var(--yellow)"><strong>Save your master key.</strong> If you lose it, your encrypted data is gone for good. <a href="/office/setup">Confirm in Setup</a>.</aside>{% block content %}{% endblock content %}</main>
+  </div>
+</div>
+<script>
+fetch('/office/setup/master-key-status').then(response => response.ok ? response.json() : response.status === 404 ? null : Promise.reject(new Error(`Status ${response.status}`))).then(status => {
+  if (status?.show) document.getElementById('master-key-banner').hidden = false;
+}).catch(error => console.error('Master key status check failed', error));
+</script>
+</body>
+</html>

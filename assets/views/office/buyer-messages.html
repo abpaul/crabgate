@@ -1,0 +1,62 @@
+{% extends "office/base.html" %}
+{% block title %}Buyer Messages{% endblock title %}
+{% block styles %}
+<style>
+.message-body { white-space:pre-wrap; overflow-wrap:anywhere; font:inherit; margin:16px 0; }
+.message-subject { overflow-wrap:anywhere; }
+.message-states { display:flex; flex-wrap:wrap; gap:12px 24px; margin:18px 0; }
+.message-states div { min-width:100px; }
+.message-states dt { font-weight:700; }
+.message-states dd { margin:0; }
+</style>
+{% endblock styles %}
+{% block content %}
+<div class="bo-head"><div><p class="small"><a href="/office/events/{{ event.id }}">{{ event.title }}</a></p><h1 class="h-l">Buyer Messages</h1></div></div>
+<p>Send event-wide operational information to Buyers. Each Buyer is responsible for forwarding it to their Attendees.</p>
+<p><strong>{{ count }} eligible Buyer email addresses now.</strong> Includes free and complimentary Orders with at least one valid Ticket. Fully refunded or void Orders are excluded. Cancelled Events have no eligible recipients.</p>
+<p>Cancellation and automatic Event change notices are separate.</p>
+{% if error %}<div class="paper paper-pad" role="alert" style="margin:24px 0;border-left:8px solid var(--error)">{{ error }}</div>{% endif %}
+{% if count == 0 %}<div class="paper paper-pad" style="margin:24px 0"><h2 class="h-m">No eligible Buyers</h2><p>No message can be sent yet. Buyers appear here when they have a valid Ticket for this Event.</p></div>{% endif %}
+{% if can_write %}
+<form class="paper paper-pad stack" style="margin:24px 0" method="post" action="/office/events/{{ event.id }}/messages/preview">
+<h2 class="h-m">Write a Buyer Message</h2>
+<p>Use plain text for practical Event information such as arrival instructions. Check the preview and recipient count before sending.</p>
+<div class="field"><label class="label" for="subject">Subject</label><input class="input" id="subject" name="subject" value="{{ draft.subject }}" required maxlength="120"></div>
+<div class="field"><label class="label" for="body">Message</label><textarea class="textarea" id="body" name="body" rows="8" required maxlength="10000">{{ draft.body }}</textarea></div>
+<div><button class="btn" type="submit">Preview and count recipients</button></div>
+</form>
+{% endif %}
+<section id="history" class="stack" style="margin-top:32px">
+<h2 class="h-m">Previews and send progress</h2>
+<p>Queued messages are processed by the existing mail job, normally within five minutes. Refresh this page to check progress.</p>
+<p>Accepted means the SMTP server accepted the message; it does not confirm inbox delivery. Failed means no acceptance was reported and retry is available. Uncertain means acceptance could not be confirmed, or sending was interrupted. Uncertain messages never retry automatically.</p>
+{% if not messages %}<p>No Buyer Messages yet. Create a preview above.</p>{% endif %}
+{% for message in messages %}
+<article class="paper paper-pad" id="message-{{ message.id }}">
+<p class="small"><strong>{{ message.state }}</strong> · {{ message.recipient_count }} Buyer recipients{% if message.state == "Preview" %} in this saved preview{% endif %}</p>
+<h3 class="h-m message-subject">{{ message.subject }}</h3>
+<pre class="message-body">{{ message.body }}</pre>
+{% if message.state == "Preview" %}
+<p>Recipients are checked again when you send. If they changed, an updated preview requires your confirmation.</p>
+{% if can_write and message.recipient_count > 0 and count > 0 %}
+<form method="post" action="/office/events/{{ event.id }}/messages/{{ message.id }}/send" class="stack">
+<input type="hidden" name="snapshot" value="{{ message.snapshot }}">
+<label><input type="checkbox" name="confirm_send" value="yes" required> I checked this message and intend to send it to {{ message.recipient_count }} Buyer email addresses.</label>
+<div><button class="btn" type="submit">Send this Buyer Message</button></div>
+</form>
+{% endif %}
+{% else %}
+<dl class="message-states"><div><dt>Pending</dt><dd>{{ message.pending }}</dd></div><div><dt>Sending</dt><dd>{{ message.sending }}</dd></div><div><dt>Accepted by SMTP</dt><dd>{{ message.accepted }}</dd></div><div><dt>Failed</dt><dd>{{ message.failed }}</dd></div><div><dt>Uncertain</dt><dd>{{ message.uncertain }}</dd></div><div><dt>Skipped</dt><dd>{{ message.skipped }}</dd></div></dl>
+<p class="small">Skipped recipients no longer have an eligible Order or current Buyer email. Interrupted sends become Uncertain after five minutes.</p>
+{% if can_write and message.failed > 0 %}<form method="post" action="/office/events/{{ event.id }}/messages/{{ message.id }}/retry"><button class="btn" type="submit">Retry {{ message.failed }} failed messages</button></form>{% endif %}
+{% if can_write and message.uncertain > 0 %}
+<form method="post" action="/office/events/{{ event.id }}/messages/{{ message.id }}/retry" class="stack" style="margin-top:18px">
+<label><input type="checkbox" name="retry_uncertain" value="yes" required> I understand that retrying {{ message.uncertain }} uncertain messages can send duplicates to Buyers who already received them.</label>
+<div><button class="btn" type="submit">Retry uncertain and failed messages</button></div>
+</form>
+{% endif %}
+{% endif %}
+</article>
+{% endfor %}
+</section>
+{% endblock content %}

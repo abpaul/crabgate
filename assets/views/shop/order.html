@@ -1,0 +1,59 @@
+{% extends "shop/base.html" %}
+{% block title %}Order {{ order.number }}{% endblock title %}
+{% block top_link %}<a href="/">All events</a>{% endblock top_link %}
+{% block head %}<meta name="robots" content="noindex">{% endblock head %}
+{% block styles %}
+<style>
+  .page { padding-block: 12px 72px; }
+  .head { position: relative; max-width: 760px; }
+  .head .stamp { margin-bottom: 18px; }
+  .head .lede { margin-top: 14px; font-size: 1.25rem; }
+  .tickets { display: grid; gap: 28px; margin-top: 34px; max-width: 760px; }
+  .tickets .stub:nth-child(odd) { transform: rotate(-.6deg); }
+  .tickets .stub:nth-child(even) { transform: rotate(.5deg); }
+  .stub-code { max-width: 100%; overflow-wrap: anywhere; }
+  .actions { margin-top: 30px; }
+  .print-only { display: none; }
+  .atdoor { padding: 26px 24px 22px; }
+  .atdoor .h-s { margin-bottom: 8px; }
+  .side { display: grid; gap: 30px; }
+  .event { padding: 24px 24px 20px; }
+  @media screen { .page { overflow-wrap: anywhere; } .head .stamp { max-width: 100%; white-space: normal; } }
+  @media (max-width: 920px) { .tickets { margin-top: 24px; } }
+  @media print {
+    @page { margin: 15mm; }
+    body.board { background: #fff; color: #000; }
+    .shop-top, .shop-foot, .head, .steps, .side, .actions, .print-help, .name-editor, main > [role="status"] { display: none !important; }
+    .wrap.page { max-width: none; padding: 0; margin: 0; }
+    .split, .tickets { display: block; max-width: none; margin: 0; }
+    .tickets .stub:nth-child(n) { display: block; transform: none; border: 1pt solid #000; border-radius: 0; box-shadow: none; background: #fff; break-inside: avoid; page-break-inside: avoid; overflow-wrap: anywhere; }
+    .stub + .stub { break-before: page; page-break-before: always; }
+    .stub::before, .stub::after { display: none; }
+    .stub-main { padding: 6mm; border: 0; }
+    .stub-main .kicker, .stub-name, .stub-ev, .stub-meta, .stub-code { color: #000; }
+    .stub-name { font-size: 22pt; }
+    .stub-ev { font-size: 16pt; }
+    .stub-meta, .stub-code, .print-only { font-size: 11pt; }
+    .stub-code { background: #fff; padding: 0; }
+    .print-only { display: block; margin-top: 3mm; }
+    .stub-qr { padding: 4mm 6mm 6mm; background: #fff; }
+    .stub-qr img { display: block; width: 40mm; height: 40mm; max-width: 100%; object-fit: contain; }
+  }
+</style>
+{% endblock styles %}
+{% block content %}
+<main class="wrap page">{% if tickets_resent %}<p class="paper paper-pad" role="status">Ticket email accepted by the mail server. Check the recipient’s inbox and spam folder; mail acceptance does not prove inbox delivery.</p>{% endif %}
+  {% if is_confirmation %}<ol class="steps" aria-label="Checkout progress"><li>Tickets</li><li>Your details</li><li>Pay</li><li aria-current="step"><span>Done</span></li></ol>{% endif %}
+  <div class="split">
+    <div><div class="head"><span class="stamp stamp-ink stamp-big">{% if refund_message %}Order total: {{ order.total }}{% elif order.status == "Paid" and order.total == "Free" %}Free{% elif order.status == "Paid" %}Paid {{ order.total }}{% else %}{{ order.status }}{% endif %}</span><h1 class="h-xl">{% if is_confirmation and order.status == "Paid" and event.status != "Cancelled" %}You're in{% if first_name %}, {{ first_name }}{% endif %}.{% else %}Your order{% endif %}</h1><p class="lede">{% if event.status == "Cancelled" %}This event is cancelled. These tickets cannot be used for entry. Contact the organizer about your order.{% elif order.status == "Paid" %}{{ order.ticket_count }} ticket{% if order.ticket_count != 1 %}s{% endif %} for <strong>{{ order.buyer_email }}</strong> {% if order.ticket_count == 1 %}is{% else %}are{% endif %} available below.{% elif order.status == "RefundPending" %}These tickets cannot be used for entry.{% elif order.status == "Refunded" %}These tickets cannot be used for entry.{% else %}This order is {{ order.status }}. These tickets cannot be used for entry. Contact the organizer for help.{% endif %} Order {{ order.number }}.</p>{% if refund_message %}<p role="status">{{ refund_message }}</p>{% endif %}{% if can_resend and not initial_email_accepted and not tickets_resent %}<p class="small" role="status">Mail acceptance has not been confirmed. Your tickets are available here. Check with the organizer before requesting another email; another attempt may deliver a duplicate.</p>{% endif %}</div>
+      <div class="tickets">{% for ticket in tickets %}<article class="stub" aria-label="Ticket {{ ticket.number }} of {{ order.ticket_count }}"><div class="stub-main"><p class="kicker">Ticket {{ ticket.number }} of {{ order.ticket_count }}, {{ ticket.ticket_type }}</p><p class="stub-name">{% if ticket.attendee_name %}{{ ticket.attendee_name }}{% else %}Admit one{% endif %}</p><p class="stub-ev">{{ event.title }}</p><p class="stub-meta">{{ event.formatted_date }}, {{ event.start_time }}, {{ event.venue }}{% if ticket.seat %}<br><strong>{{ ticket.seat }}</strong>{% endif %}</p><span class="stub-code">{{ ticket.code }}</span><p class="print-only">{{ event.address }}</p><p class="print-only">{{ organizer_name }} · Order {{ order.number }}</p>{% if refund_message %}<p class="print-only">{{ refund_message }}</p>{% endif %}</div>{% if order.status == "Paid" and event.status != "Cancelled" and ticket.status == "Valid" %}<div class="stub-qr"><img src="{{ ticket.qr_url }}" alt="QR code for ticket {{ ticket.code }}" width="148" height="148"></div>{% else %}<div class="stub-qr"><strong>{% if event.status == "Cancelled" %}Event cancelled{% elif order.status != "Paid" and ticket.status == "Valid" %}Order inactive{% else %}{{ ticket.status }}{% endif %}</strong><p>Not valid for entry.</p></div>{% endif %}</article>{% endfor %}</div>
+      <div class="actions btn-row"><button class="btn btn-line" type="button" id="print-order" aria-describedby="print-help">Print tickets</button><a href="{{ order_url }}">Manage this order</a>{% if can_resend %}<form method="post" action="{{ resend_url }}"><button class="btn btn-line" type="submit">Resend email</button></form>{% endif %}</div>
+      <p class="small print-help" id="print-help">Print one page per attendee. Use Print tickets or your browser’s Print menu. You can choose Save as PDF if your browser offers it. Check that each QR code is visible in the preview before printing. Save attendee name changes first.</p>
+      {% if can_edit_names %}<section class="paper paper-pad name-editor" style="margin-top:28px"><h2 class="h-m">Attendee names</h2><p>You can change a name until the event starts.</p><form method="post" action="{{ names_url }}">{% for ticket in tickets %}<div class="field" style="margin-top:14px"><label class="label" for="name_{{ ticket.id }}">{{ ticket.ticket_type }}, {{ ticket.code }}</label><input class="input" id="name_{{ ticket.id }}" name="name_{{ ticket.id }}" value="{{ ticket.attendee_name }}" {% if event.attendee_name_required %}required{% endif %}></div>{% endfor %}<button class="btn" style="margin-top:20px" type="submit">Save names</button></form></section>{% endif %}
+    </div>
+    <aside class="side sticky">{% if order.status == "Paid" and event.status != "Cancelled" %}<section class="atdoor sticky-note" aria-labelledby="door-h"><h2 id="door-h" class="h-s">At the door</h2><ul class="ticks small"><li>Show the code on your phone or on paper. One code lets one person in.</li><li>Lost the email? Use this order link.</li></ul></section>{% else %}<section class="atdoor sticky-note" aria-label="Order status"><h2 class="h-s">{% if event.status == "Cancelled" %}Event cancelled{% else %}Tickets not valid{% endif %}</h2><p>These tickets can't be used for entry.</p></section>{% endif %}<section class="event paper" aria-label="Event details"><span class="tape tape-c" aria-hidden="true"></span><dl class="facts"><dt>When</dt><dd>{{ event.formatted_date }}, {{ event.start_time }} to {{ event.end_time }}</dd><dt>Where</dt><dd>{{ event.venue }}, {{ event.address }}.</dd><dt>Order</dt><dd>{{ order.number }}</dd><dt>Tickets</dt><dd>{{ order.ticket_count }}</dd><dt>Total</dt><dd>{{ order.total }}</dd></dl></section></aside>
+  </div>
+</main>
+{% endblock content %}
+
+{% block scripts %}<script src="/static/shared/order-print.js" defer></script>{% endblock scripts %}

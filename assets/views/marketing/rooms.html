@@ -1,0 +1,86 @@
+{% extends "marketing/base.html" %}
+{% block title %}Ticketing for small rooms with their own list | CrabGate{% endblock title %}
+{% block description %}Publish your nights, sell tickets, manage attendees, email buyers and check in from a phone. Hosted ticketing for rooms. {{ price }} USD a year, plus Stripe card fees.{% endblock description %}
+{% block main %}
+<main>
+  <section class="wrap lp-hero">
+    <p class="kicker">For comedy rooms, fringe studios, and listening rooms</p>
+    <h1 class="h-xl lp-h1">Put your nights on sale. <mark>Keep the door moving.</mark></h1>
+    <p class="lp-sub">Create each night, set ticket prices and capacity, and share your hosted shop link. Manage attendees, email buyers with event updates, and scan tickets at the door. <b>{{ price }} USD a year</b>, plus Stripe’s card fee; we never take a cut.</p>
+    {% include "marketing/_cta.html" %}
+  </section>
+
+  <section class="wrap lp-sec" aria-labelledby="get-h">
+    <h2 id="get-h" class="h-l">Run your room from sale to check-in</h2>
+    <div class="cards">
+      <article class="paper paper-pad"><h3 class="h-m">Set prices and put your night on sale</h3><p>We add no booking fee at checkout. A £15 ticket costs £15. Buyers pay by card and get their tickets by email, with no account and no password.</p></article>
+      <article class="paper paper-pad"><h3 class="h-m">Manage attendees and email buyers</h3><p>Review your attendee roster and issue complimentary tickets. Preview an event update and its recipient count before sending it to eligible buyers. Buyers forward it to their guests.</p></article>
+      <article class="paper paper-pad"><h3 class="h-m">The door runs on a phone</h3><p>Check people in from any phone's browser, with nothing to install. Scan the ticket, or find the name. Hand a helper a Door Link for the night, and it stops working when the night ends.</p></article>
+      <article class="paper paper-pad"><h3 class="h-m">Export the night’s records</h3><p>Your shop shows your nights and nobody else's. Download your orders, tickets, and check-ins before live hosted data is deleted, 90 days after your subscription lapses.</p></article>
+    </div>
+  </section>
+
+  <section class="wrap lp-sec" aria-labelledby="sum-h">
+    <h2 id="sum-h" class="h-l">The fee on every ticket adds up fast</h2>
+    <div class="paper paper-pad sum">
+      <p>Take a room with 150 seats and a night a week, 40 weeks a year. That's 6,000 tickets.</p>
+      <p class="big">At Ticket Tailor's published pay-as-you-go rate, that's about £4,300 a year. At Eventbrite UK's published rate on a £15 ticket, it's about £9,800.</p>
+      <p>Either that comes out of your takings, or your regulars pay it at checkout, every night, on top of the ticket. Over five years, that's between £21,500 and £49,000 leaving the same room.</p>
+      <p>And the fee isn't buying you an audience. You built the list. You fill the room.</p>
+      <p class="big">With CrabGate, that line is {{ price }} a year. A full room costs you the same as a quiet one, and every sold-out night is yours to keep.</p>
+      <p class="src">These are estimates for an example room. The rates and sources are <a href="#cmp-h">further down</a>.</p>
+    </div>
+  </section>
+
+  {% include "marketing/_offer.html" %}
+
+  {% include "marketing/_demo.html" %}
+
+  <section class="wrap lp-sec" aria-labelledby="cmp-h">
+    <h2 id="cmp-h" class="h-l">{{ price }} a year against Ticket Tailor and Eventbrite UK</h2>
+    <div class="lp-body">
+      <p>The same example room: 6,000 tickets a year at £15. These are the fees each company published on 2026-10-02.</p>
+    </div>
+    <div class="cards cards-3">
+      <article class="paper paper-pad"><h3 class="h-s">Ticket Tailor, pay-as-you-go</h3><p class="fee">£0.60 + VAT a ticket</p><p><b>Estimate:</b> about £4,300 a year for this room, at £0.72 with UK VAT.</p><p class="src">Source: <a href="https://www.tickettailor.com/pricing">tickettailor.com/pricing</a>, read 2026-10-02.</p></article>
+      <article class="paper paper-pad"><h3 class="h-s">Ticket Tailor, prepaid credits</h3><p class="fee">From £0.22 + VAT a ticket</p><p><b>Estimate:</b> from about £1,560 a year for this room, at about £0.26 with UK VAT.</p><p class="src">Source: <a href="https://www.tickettailor.com/pricing">tickettailor.com/pricing</a>, read 2026-10-02.</p></article>
+      <article class="paper paper-pad"><h3 class="h-s">Eventbrite UK</h3><p class="fee">6.95% + £0.59 a paid ticket</p><p><b>Estimate:</b> about £9,800 a year for this room. That fee includes card processing.</p><p class="src">Source: <a href="https://www.eventbrite.com/help/en-us/articles/755615/how-much-does-it-cost-for-organizers-to-use-eventbrite/">Eventbrite help</a>, read 2026-10-02.</p></article>
+    </div>
+    <div class="lp-body">
+      <p><b>CrabGate: {{ price }} a year</b>, plus Stripe's card fee. Unlimited events and tickets, with no CrabGate transaction fee.</p>
+      <p>If your buyers pay the booking fee today, they stop paying it.</p>
+      <p class="src">Ticket Tailor's fee also comes on top of your card processor's fee.</p>
+    </div>
+  </section>
+
+  <section class="wrap lp-sec" aria-labelledby="not-h">
+    <h2 id="not-h" class="h-l">What's coming next</h2>
+    <div class="paper paper-pad sheet">
+      {% include "marketing/_on_our_list.html" %}
+      <p class="after">Need Gift Aid, phone sales, or a marketplace that finds you an audience? That isn't us.</p>
+    </div>
+    {% include "marketing/_feedback.html" %}
+  </section>
+
+  <section class="wrap lp-sec faq" aria-labelledby="faq-h">
+    <h2 id="faq-h" class="h-l">Questions from room owners</h2>
+    <dl>
+      <div class="paper paper-pad"><dt class="h-s">Do I have to move every event at once?</dt><dd>No. Put your next night on CrabGate and leave the rest where they are. Move the others when you're ready.</dd></div>
+      <div class="paper paper-pad"><dt class="h-s">What does it cost besides {{ price }}?</dt><dd>Only your card processor's fee. Today that's Stripe, and we add nothing to it.</dd></div>
+      <div class="paper paper-pad"><dt class="h-s">Can my shop be on my own web address?</dt><dd>Not yet. Your shop lives at yourname.crabgate.com, and you link to it from your own site. Your own domain is on our list. If it matters to you, tell us.</dd></div>
+      <div class="paper paper-pad"><dt class="h-s">Can I sell numbered seats?</dt><dd>Yes. Enter a section, a row, and the seat labels, and buyers pick their seats from the list. A map of the room is on our list.</dd></div>
+      <div class="paper paper-pad"><dt class="h-s">What if it isn't for me?</dt><dd>The setup call is free, and you pay only when your event goes on sale. If that first event doesn't go well, email Paul within 30 days of paying and he'll refund the {{ price }}.</dd></div>
+      <div class="paper paper-pad"><dt class="h-s">What if my payment to CrabGate fails?</dt><dd>Your shop keeps working for a 14-day grace period, so you have time to sort it out. If payment is not restored, your subscription lapses and ticket sales stop. Export your data before we delete your live hosted data, 90 days after your subscription lapses. While we retain your data, you can check in eligible tickets before the event ends.</dd></div>
+    </dl>
+  </section>
+
+  <section class="wrap lp-sec"><p>Planning your next event? Read our <a href="/guides/sell-tickets-small-event">small-event ticket launch guide</a>.</p></section>
+
+  <section class="wrap closing" aria-labelledby="close-h">
+    <h2 id="close-h" class="h-l">Your next night could be on sale this week.</h2>
+    {% include "marketing/_cta.html" %}
+  </section>
+
+  <div class="wrap lp-next"><p>Run a conference? Read <a href="/for-conferences">CrabGate for independent conferences</a>. Run the same workshop again and again? Read <a href="/for-workshops">CrabGate for repeating workshops</a>. The price is on the <a href="/pricing">pricing page</a>.</p></div>
+</main>
+{% endblock main %}

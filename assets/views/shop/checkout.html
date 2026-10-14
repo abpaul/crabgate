@@ -1,0 +1,64 @@
+{% extends "shop/base.html" %}
+{% block title %}Your details | {{ event.title }}{% endblock title %}
+{% block top_link %}<form method="post" action="/checkout/{{ hold.id }}/cancel"><button class="link-action" type="submit">Back to event</button></form>{% endblock top_link %}
+{% block head %}<meta name="robots" content="noindex">{% endblock head %}
+{% block styles %}
+<style>
+  .page { padding-block: 12px 72px; overflow-wrap: anywhere; }
+  .split { grid-template-areas: "buyer summary"; }
+  .split > * { min-width: 0; }
+  .aside { grid-area: summary; }
+  .form { grid-area: buyer; padding: 34px 32px 30px; }
+  .form .h-l { margin-bottom: 8px; }
+  .form .lede { margin-bottom: 26px; }
+  fieldset { min-width: 0; border: 0; padding: 0; margin: 30px 0 0; }
+  legend { padding: 0; }
+  .who { margin-top: 18px; padding: 16px 16px 18px; border: 2px dashed var(--line-strong); border-radius: 4px; }
+  .who .label { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 8px; }
+  .who .tag { font-size: .9375rem; font-weight: 800; color: var(--muted); }
+  .form .btn-block { margin-top: 28px; padding-block: 12px; }
+  .form .stamp { display: block; white-space: normal; transform: none; }
+  .form .checkbox-label input { flex: none; }
+  .hold { padding: 24px 22px 22px; }
+  .hold .clock { display: flex; align-items: center; gap: 12px; margin-bottom: 8px; }
+  .hold .clock b { font-size: 2rem; font-weight: 900; letter-spacing: -.02em; color: var(--deep); }
+  .summary { margin-top: 26px; padding: 26px 22px 18px; }
+  .summary .row { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 12px; padding: 8px 0; font-size: 1.0625rem; }
+  .summary .row > span:first-child { flex: 1 1 140px; min-width: 0; }
+  .summary .ev { font-weight: 800; color: var(--deep); line-height: 1.25; margin-bottom: 4px; }
+  .summary .total { margin-top: 8px; flex-wrap: wrap; gap: 8px; }
+  .summary .amount { max-width: 100%; }
+  @media (max-width: 920px) { .split { grid-template-areas: "summary" "buyer"; } .summary { margin-top: 18px; padding: 22px 18px 14px; } .summary .amount { font-size: 1.75rem; } .hold { padding: 18px 18px 16px; transform: rotate(-.6deg); } .hold .clock b { font-size: 1.5rem; } .form { padding: 26px 18px 22px; } }
+</style>
+{% endblock styles %}
+{% block content %}
+<main class="wrap page">
+  <ol class="steps" aria-label="Checkout progress"><li>Tickets</li><li aria-current="step"><span>Your details</span></li><li>Pay</li><li>Done</li></ol>
+  <div class="split">
+    <aside class="aside sticky"><div class="hold sticky-note" role="status" data-expires-at="{{ hold.expires_at }}"><div class="clock"><b>Held until {{ hold.ends_local }}</b></div><p class="small">Complete checkout{% if hold.total_cents > 0 %}, including payment,{% endif %} by this deadline. After that, the tickets go back on sale. The deadline uses the event's time zone.</p></div>
+      <section class="summary paper" aria-labelledby="sum-h"><span class="tape tape-c" aria-hidden="true"></span><h2 id="sum-h" class="sr-only">Your order</h2><p class="ev">{{ event.title }}</p><p class="small muted">{{ event.formatted_date }}, {{ event.venue }}</p>{% for item in items %}<div class="row"><span>{{ item.quantity }} × {{ item.name }}</span><span class="num">{{ item.total }}</span></div>{% endfor %}{% if hold.discount_code %}<div class="row"><span>Discount {{ hold.discount_code }}</span><span class="num">−{{ hold.discount }}</span></div>{% endif %}<div class="total"><span>Total</span><span class="amount hl-under">{{ total }}</span></div><form method="post" action="/checkout/{{ hold.id }}/cancel"><button class="link-action small" type="submit">Change tickets</button></form></section>
+    </aside>
+    <form class="form paper" method="post" action="/checkout/{{ hold.id }}" aria-labelledby="h">
+      <h1 id="h" class="h-l">Where should your tickets go?</h1>
+      <p class="lede">No account, no password. Just an email address that works.</p>
+      {% if error %}<p role="alert" class="stamp">{{ error }}</p>{% endif %}
+      <div class="field"><label class="label" for="email">Your email</label><input class="input" id="email" name="email" type="email" autocomplete="email" value="{{ email }}" required><p class="hint">Your tickets and a link to your order go here.</p></div>
+      <fieldset><legend class="h-s">Who's coming? {% if not event.attendee_name_required %}<span class="muted" style="font-weight:600">Optional</span>{% endif %}</legend><p class="hint" style="margin-top:4px">The name goes on each ticket, so the door can find it fast.</p>
+        {% for attendee in attendees %}<div class="who field"><label class="label" for="name_{{ attendee.ordinal }}">Ticket {{ attendee.number }} <span class="tag">{{ attendee.ticket_type }}</span></label>{% if attendee.seat %}<p class="small">{{ attendee.seat }}</p>{% endif %}<input class="input" id="name_{{ attendee.ordinal }}" name="name_{{ attendee.ordinal }}" autocomplete="name" value="{{ attendee.name }}" {% if event.attendee_name_required %}required{% endif %}></div>{% endfor %}
+      </fieldset>
+      {% if order_questions | length > 0 or attendee_questions | length > 0 %}<fieldset><legend class="h-s">A few questions</legend>
+        {% for field in order_questions %}<div class="field" style="margin-top:18px">{% if field.question.kind == "Checkbox" %}<label class="checkbox-label" for="{{ field.field }}"><input id="{{ field.field }}" name="{{ field.field }}" type="checkbox" value="yes" {% if field.value == "yes" %}checked{% endif %} {% if field.question.required %}required{% endif %}> {{ field.question.label }}</label>{% else %}<label class="label" for="{{ field.field }}">{{ field.question.label }}{% if not field.question.required %} <span class="muted">Optional</span>{% endif %}</label>{% if field.question.kind == "Choice" %}<select class="input" id="{{ field.field }}" name="{{ field.field }}" {% if field.question.required %}required{% endif %}><option value="">Choose an answer</option>{% for option in field.question.options %}<option value="{{ option }}" {% if option == field.value %}selected{% endif %}>{{ option }}</option>{% endfor %}</select>{% else %}<input class="input" id="{{ field.field }}" name="{{ field.field }}" value="{{ field.value }}" maxlength="500" {% if field.question.required %}required{% endif %}>{% endif %}{% endif %}</div>{% endfor %}
+        {% for field in attendee_questions %}<div class="field" style="margin-top:18px">{% if field.question.kind == "Checkbox" %}<label class="checkbox-label" for="{{ field.field }}"><input id="{{ field.field }}" name="{{ field.field }}" type="checkbox" value="yes" {% if field.value == "yes" %}checked{% endif %} {% if field.question.required %}required{% endif %}> Ticket {{ field.number }}: {{ field.question.label }}</label>{% else %}<label class="label" for="{{ field.field }}">Ticket {{ field.number }}: {{ field.question.label }}{% if not field.question.required %} <span class="muted">Optional</span>{% endif %}</label>{% if field.question.kind == "Choice" %}<select class="input" id="{{ field.field }}" name="{{ field.field }}" {% if field.question.required %}required{% endif %}><option value="">Choose an answer</option>{% for option in field.question.options %}<option value="{{ option }}" {% if option == field.value %}selected{% endif %}>{{ option }}</option>{% endfor %}</select>{% else %}<input class="input" id="{{ field.field }}" name="{{ field.field }}" value="{{ field.value }}" maxlength="500" {% if field.question.required %}required{% endif %}>{% endif %}{% endif %}</div>{% endfor %}
+      </fieldset>{% endif %}
+      <input type="hidden" name="booking_terms_token" value="{{ booking_terms.token }}">
+      {% if booking_terms.terms.url %}<fieldset><legend class="h-s">Booking terms</legend>
+        <p class="small"><a href="{{ booking_terms.terms.url }}" target="_blank" rel="noopener noreferrer">Read the organizer’s booking terms</a></p>
+        <label class="checkbox-label" for="booking-terms-ack"><input id="booking-terms-ack" name="booking_terms_ack" type="checkbox" value="yes" {% if booking_terms.terms.required %}required{% endif %}> {{ booking_terms.terms.wording }}{% if not booking_terms.terms.required %} (Optional){% endif %}</label>
+      </fieldset>{% endif %}
+      {% if hold.discount_code %}<p class="small" role="status" style="margin-top:24px">Code <strong>{{ hold.discount_code }}</strong> saves {{ hold.discount }}. Your total is <strong>{{ total }}</strong>.</p>{% endif %}
+      <button class="btn btn-block" type="submit">{% if hold.total_cents == 0 %}Get tickets{% else %}Continue to payment{% endif %} — {{ total }}</button>
+      {% if hold.total_cents > 0 %}<p class="hint" style="margin-top:12px;text-align:center">Next, you pay {{ total }} on Stripe's page.</p>{% endif %}
+    </form>
+  </div>
+</main>
+{% endblock content %}

@@ -1,0 +1,29 @@
+<section class="wrap lp-sec" id="offer" aria-labelledby="offer-h">
+  <article class="paper paper-pad topband offer">
+    <span class="pin" aria-hidden="true"></span>
+    <h2 id="offer-h" class="h-l">The offer: I'll get your next event on sale with you, free</h2>
+    <div class="founder">
+      <img src="/static/marketing/paul-badarau.webp" alt="Paul Bădărău" width="360" height="360" loading="lazy">
+      <div>
+        <p class="lede">I'm Paul Bădărău, and I build CrabGate. {% if offer_ends %}Until {{ offer_ends }}, I'm setting up every new shop myself.{% else %}I set up new shops myself.{% endif %} Pick your next real event, and we'll get it on sale together in one 45-minute call.</p>
+        <p class="lede">The call is free. You pay {{ price }} for the year when you put the event on sale. If you don't, you owe nothing.</p>
+      </div>
+    </div>
+    {% if offer_ends %}<p class="promise"><b>This offer closes on {{ offer_ends }}.</b> {% if days_left > 1 %}That's {{ days_left }} days from today.{% elif days_left == 1 %}That's tomorrow.{% else %}That's today.{% endif %} After that, you set up your shop on your own.</p>{% endif %}
+    <h3 class="h-s" style="margin-top:22px">By the end of the call, you'll have</h3>
+    <ul class="ticks">
+      <li>Your shop, at an address you choose.</li>
+      <li>Your payment account connected, so ticket money goes straight to you.</li>
+      <li>Your next event built, with its ticket types and prices.</li>
+      <li>A test order in your inbox, so you've seen what your buyers get.</li>
+      <li>A Door Link for whoever checks people in.</li>
+    </ul>
+    <p class="promise"><b>And if it doesn't work out?</b> If your first event on CrabGate doesn't go well, email me within 30 days of paying and I'll refund the {{ price }}. No form, no argument.</p>
+    <div class="btn-row">
+      <a class="btn" href="{{ setup_url | safe }}">Set up your next event</a>
+      <span class="small">It takes a minute and no card. I get an email the moment you sign up, and I reply within one working day. Your other events stay right where they are.</span>
+    </div>
+    <p class="charity"><b>Running events for a charity, nonprofit, or community organisation?</b> CrabGate is free for you. <a href="mailto:hello@crabgate.com">Email hello@crabgate.com</a> to get access.</p>
+    <p class="more muted">More about me: <a href="https://www.linkedin.com/in/paulbpa/">LinkedIn</a>, <a href="https://github.com/abpaul">GitHub</a>, <a href="https://badarau.net">badarau.net</a>, <a href="https://alplustech.com">AL+</a>, my agency.</p>
+  </article>
+</section>

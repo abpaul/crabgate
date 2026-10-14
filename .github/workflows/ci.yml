@@ -1,0 +1,82 @@
+name: CI
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+permissions:
+  contents: read
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    concurrency:
+      group: crabgate-ci-${{ github.workflow }}-${{ github.event_name }}-${{ github.event.pull_request.number || github.ref }}
+      cancel-in-progress: true
+    env:
+      CRABGATE_MASTER_KEY: "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA="
+      # Full debug info in every test binary fills the runner disk. The panic
+      # report test needs file and line numbers for this package only.
+      CARGO_PROFILE_DEV_DEBUG: line-tables-only
+      CARGO_PROFILE_TEST_DEBUG: line-tables-only
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install Rust 1.98
+        run: |
+          rustup toolchain install 1.98 --profile minimal --component rustfmt --component clippy
+          rustup default 1.98
+      - uses: Swatinem/rust-cache@v2
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Create isolated synthetic test storage
+        run: |
+          test_root=$(mktemp -d "$RUNNER_TEMP/crabgate-test.XXXXXX")
+          mkdir "$test_root/tenants" "$test_root/evidence" "$test_root/tmp"
+          echo "CRABGATE_TEST_ROOT=$test_root" >> "$GITHUB_ENV"
+          echo "TMPDIR=$test_root/tmp" >> "$GITHUB_ENV"
+          echo "DATABASE_URL=sqlite://$test_root/control.db?mode=rwc" >> "$GITHUB_ENV"
+          echo "CRABGATE_ORGANIZER_DATABASE_DIR=$test_root/tenants" >> "$GITHUB_ENV"
+          echo "CRABGATE_TEST_EVIDENCE_DIR=$test_root/evidence" >> "$GITHUB_ENV"
+          echo "CG032_TEST_ROOT=$test_root/evidence" >> "$GITHUB_ENV"
+      - name: Runner disk before verification
+        run: |
+          uname -a
+          nproc
+          free -h
+          df -h . "$RUNNER_TEMP"
+      - run: cargo fmt --check
+      - run: cargo clippy --config 'profile.dev.package."*".debug=false' --all-targets --locked -- -D warnings
+      - name: Check the isolated test runner
+        run: python3 -m unittest discover -s tests -p test_ci_tests.py
+      - name: Run Rust tests in four isolated processes
+        run: python3 scripts/ci-test.py --workers 4
+      - name: Check deployment and restore scripts
+        run: |
+          python3 -m unittest discover -s tests -p test_tenant_smoke.py
+          python3 -m unittest discover -s tests -p test_restore_organizer.py
+      - name: Check free tool maths
+        run: node tests/free_tool_math.cjs
+      - name: Runner disk after verification
+        if: always()
+        run: |
+          df -h . "$RUNNER_TEMP"
+          du -sh "${CRABGATE_TEST_ROOT:-$RUNNER_TEMP}"
+          if [ -d target ]; then du -sh target; fi
+      - name: Retain Rust test logs and inventory
+        if: always() && env.CRABGATE_TEST_ROOT != ''
+        uses: actions/upload-artifact@v4
+        with:
+          name: rust-test-results-${{ github.run_attempt }}
+          path: |
+            ${{ env.CRABGATE_TEST_ROOT }}/rust-tests-*/summary.json
+            ${{ env.CRABGATE_TEST_ROOT }}/rust-tests-*/**/stdout.log
+            ${{ env.CRABGATE_TEST_ROOT }}/rust-tests-*/**/stderr.log
+      - name: Retain failed synthetic test evidence
+        if: failure() && env.CRABGATE_TEST_ROOT != ''
+        uses: actions/upload-artifact@v4
+        with:
+          name: synthetic-test-evidence-${{ github.run_attempt }}
+          path: ${{ env.CRABGATE_TEST_ROOT }}

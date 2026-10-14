@@ -1,0 +1,88 @@
+{% extends "marketing/base.html" %}
+{% block title %}Ticketing for independent conferences | CrabGate{% endblock title %}
+{% block description %}Sell conference tickets, collect attendee details, email buyers, run registration and export your records. Hosted ticketing. {{ price }} USD a year, plus Stripe card fees.{% endblock description %}
+{% block main %}
+<main>
+  <section class="wrap lp-hero">
+    <p class="kicker">For independent technical and community conferences</p>
+    <h1 class="h-xl lp-h1">Sell conference tickets. <mark>Run registration.</mark></h1>
+    <p class="lp-sub">Set early bird and standard sales windows, collect attendee details, email buyers, and check people in from a phone. Hosted ticketing for <b>{{ price }} USD a year</b>, plus Stripe’s card fee; we never take a cut.</p>
+    {% include "marketing/_cta.html" %}
+  </section>
+
+  <section class="wrap lp-sec" aria-labelledby="get-h">
+    <h2 id="get-h" class="h-l">Prepare your conference and run the registration desk</h2>
+    <div class="cards">
+      <article class="paper paper-pad"><h3 class="h-m">Create your conference event</h3><p>Set the date, venue, capacity, ticket prices, and sales windows. Share your hosted shop link with your audience.</p></article>
+      <article class="paper paper-pad"><h3 class="h-m">Tickets that go on sale in steps</h3><p>Early bird ends on the date you set, and standard takes over. Give sponsors and community groups a discount code, and give speakers complimentary tickets.</p></article>
+      <article class="paper paper-pad"><h3 class="h-m">You know who's coming</h3><p>Ask each attendee what you need to know, like food and access needs. One person can buy for a whole team and fill in the names later.</p></article>
+      <article class="paper paper-pad"><h3 class="h-m">Send joining instructions to buyers</h3><p>Preview your event message and recipient count. Email each eligible buyer once, including free and complimentary orders. Buyers forward instructions to the rest of their team.</p></article>
+      <article class="paper paper-pad"><h3 class="h-m">A registration desk that moves</h3><p>Check people in from any phone's browser, with nothing to install. Scan the ticket, or find the name. Give each helper their own Door Link.</p></article>
+      <article class="paper paper-pad"><h3 class="h-m">Export your conference records</h3><p>Download orders, tickets, attendee answers, and check-ins as CSV.</p></article>
+    </div>
+  </section>
+
+  <section class="wrap lp-sec" aria-labelledby="sum-h">
+    <h2 id="sum-h" class="h-l">3% sounds small until you do the sum</h2>
+    <div class="paper paper-pad sum">
+      <p>500 people at €300 a ticket is €150,000 of tickets.</p>
+      <p class="big">3% of that is €4,500. Every year.</p>
+      <p>That's money that could go on speakers, the venue, or a lower ticket price. Over five conferences it's €22,500. And the bill grows every time you sell more seats or raise the price, which are the two things you're working hardest to do.</p>
+      <p class="big">With CrabGate, that line is {{ price }} a year, whether 200 people come or 800. Grow the conference, and the growth is yours.</p>
+      <p class="src">These are estimates for an example conference. The rate and source are <a href="#cmp-h">further down</a>.</p>
+    </div>
+  </section>
+
+  {% include "marketing/_offer.html" %}
+
+  {% include "marketing/_demo.html" %}
+
+  <section class="wrap lp-sec" aria-labelledby="cmp-h">
+    <h2 id="cmp-h" class="h-l">Tito's published fee against {{ price }} a year</h2>
+    <div class="lp-body">
+      <p>Tito's pricing page lists a fee of 3%, capped at €25. Source: <a href="https://ti.to/pricing">ti.to/pricing</a>, read 2026-10-02.</p>
+    </div>
+    <div class="paper paper-pad sheet table-wrap">
+      <table class="table">
+        <thead><tr><th>Example conference</th><th class="r">3% of paid tickets</th><th class="r">CrabGate</th></tr></thead>
+        <tbody>
+          <tr><td>300 tickets at €150</td><td class="r num">€1,350</td><td class="r num">{{ price }}</td></tr>
+          <tr><td>500 tickets at €300</td><td class="r num">€4,500</td><td class="r num">{{ price }}</td></tr>
+          <tr><td>800 tickets at €400</td><td class="r num">€9,600</td><td class="r num">{{ price }}</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="lp-body">
+      <p>CrabGate charges no percentage of ticket sales. Stripe's card fee still applies.</p>
+      <p class="src">Competitor figures are estimates for the example ticket volumes above. CrabGate's annual price is in US dollars; no currency conversion is assumed.</p>
+    </div>
+  </section>
+
+  <section class="wrap lp-sec" aria-labelledby="not-h">
+    <h2 id="not-h" class="h-l">What's coming next</h2>
+    <div class="paper paper-pad sheet">
+      {% include "marketing/_on_our_list.html" %}
+      <p class="after">Not yet: badges, invoices for buyers, and a schedule or call for papers. If you need those for this year's conference, tell us. It shapes what we build next.</p>
+    </div>
+    {% include "marketing/_feedback.html" %}
+  </section>
+
+  <section class="wrap lp-sec faq" aria-labelledby="faq-h">
+    <h2 id="faq-h" class="h-l">Questions from conference organisers</h2>
+    <dl>
+      <div class="paper paper-pad"><dt class="h-s">What if CrabGate goes away?</dt><dd>If we stop offering CrabGate, we'll give you at least 90 days' notice. You can export your data while live hosted data is available. Export it before we delete your live hosted data, 90 days after your subscription lapses.</dd></div>
+      <div class="paper paper-pad"><dt class="h-s">What does it cost besides {{ price }}?</dt><dd>Only your card processor's fee. Today that's Stripe, and we add nothing to it.</dd></div>
+      <div class="paper paper-pad"><dt class="h-s">Can one person buy tickets for a team?</dt><dd>Yes. A buyer can put several tickets in one order and change the attendee names on the order page until the conference starts.</dd></div>
+      <div class="paper paper-pad"><dt class="h-s">Do we have to move our old data?</dt><dd>No. Start with your next conference. Last year's orders can stay where they are.</dd></div>
+      <div class="paper paper-pad"><dt class="h-s">What if it isn't for me?</dt><dd>The setup call is free, and you pay only when your event goes on sale. If that first event doesn't go well, email Paul within 30 days of paying and he'll refund the {{ price }}.</dd></div>
+    </dl>
+  </section>
+
+  <section class="wrap closing" aria-labelledby="close-h">
+    <h2 id="close-h" class="h-l">Put your next conference on sale.</h2>
+    {% include "marketing/_cta.html" %}
+  </section>
+
+  <div class="wrap lp-next"><p>Run a small room with its own list? Read <a href="/for-rooms-with-an-audience">CrabGate for rooms with an audience</a>. Run the same workshop again and again? Read <a href="/for-workshops">CrabGate for repeating workshops</a>. The price is on the <a href="/pricing">pricing page</a>.</p></div>
+</main>
+{% endblock main %}

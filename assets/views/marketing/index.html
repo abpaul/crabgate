@@ -1,0 +1,145 @@
+{% extends "marketing/base.html" %}
+{% block title %}CrabGate | Tickets for rooms, conferences and recurring workshops{% endblock title %}
+{% block description %}Create events, sell tickets, manage attendees, email buyers, check in and export. Hosted ticketing for rooms, conferences and recurring workshops. {{ price }} USD a year, plus Stripe card fees.{% endblock description %}
+{% block styles %}<style>
+  .hero { display: grid; grid-template-columns: minmax(0, 1.3fr) minmax(0, 1fr); gap: 48px; align-items: center; }
+  .hero .lp-hero { padding-inline: 0; }
+  .choose { margin-top: 20px; }
+  .lp-next p + p { margin-top: 12px; }
+  .choose .small { font-weight: 800; color: var(--deep); margin-bottom: 8px; }
+  .collage { position: relative; height: 470px; }
+  .collage .mark { position: absolute; left: 4%; top: 30px; width: 190px; height: auto; transform: rotate(-8deg); filter: drop-shadow(0 12px 16px rgb(11 21 27 / .18)); }
+  .mini { position: absolute; right: 0; top: 0; width: 300px; padding: 12px 12px 16px; transform: rotate(3deg); }
+  .mini img { width: 100%; aspect-ratio: 16/10; object-fit: cover; }
+  .mini .t, .mini-stub .t { font-weight: 900; font-size: 1.125rem; color: var(--deep); margin-top: 10px; line-height: 1.2; }
+  .mini-stub { position: absolute; left: 18%; bottom: 10px; width: 280px; padding: 16px 18px; display: grid; grid-template-columns: 1fr 84px; gap: 4px 12px; align-items: center; transform: rotate(-4deg); border-left: 10px solid var(--yellow); }
+  .mini-stub .kicker, .mini-stub .t { grid-column: 1; }
+  .mini-stub img { grid-column: 2; grid-row: 1 / span 2; }
+  .big-note { position: absolute; right: 6%; bottom: 120px; font-size: 1.375rem; transform: rotate(6deg); }
+  .who .paper { display: grid; gap: 8px; align-content: start; padding-top: 40px; }
+  .who .paper:nth-child(1) { transform: rotate(-1deg); }
+  .who .paper:nth-child(2) { transform: rotate(.8deg); }
+  .who .paper:nth-child(3) { transform: rotate(-.4deg); }
+  .steps3 { list-style: none; display: grid; grid-template-columns: repeat(3, 1fr); gap: 36px; margin-top: 30px; }
+  .steps3 li { border-top: 4px solid var(--ink); padding-top: 18px; }
+  .steps3 .n { display: inline-grid; place-items: center; width: 56px; height: 56px; border: 3px solid var(--ink); border-radius: 50% 45% 52% 40% / 55% 50% 45% 50%; font-size: 1.75rem; font-weight: 900; transform: rotate(-6deg); margin-bottom: 12px; background: var(--yellow); }
+  .steps3 p { margin-top: 8px; font-size: 1.125rem; }
+  .built-with { padding-block: 20px 48px; }
+  .built-with-intro { margin-top: 8px; color: var(--muted); }
+  .built-with-list { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); margin-top: 20px; padding: 12px; list-style: none; }
+  .built-with-list li + li { border-left: 2px dashed var(--line-strong); }
+  .built-with-list a { display: flex; min-height: 76px; align-items: center; justify-content: center; gap: 12px; padding: 10px 14px; color: var(--deep); text-decoration-thickness: .1em; text-underline-offset: .2em; }
+  .built-with-list img { width: 44px; height: 44px; object-fit: contain; }
+  .built-with-list .postdeploy-mark { width: 42px; height: 42px; }
+  .built-with-list .ovhcloud-logo { width: 132px; height: auto; color: #000e9c; }
+  .built-with-list .brand-name { font-weight: 900; }
+  .built-with-credit { margin-top: 10px; font-size: .8125rem; color: var(--muted); }
+  .built-with-credit a { color: var(--ink); }
+  @media (max-width: 920px) {
+    .hero { grid-template-columns: 1fr; gap: 8px; }
+    .collage { height: 250px; }
+    .collage .mark { width: 110px; top: 20px; }
+    .mini { width: 220px; right: 4px; }
+    .mini-stub { display: none; }
+    .big-note { right: auto; left: 2%; bottom: 6px; font-size: 1.125rem; transform: rotate(-5deg); }
+    .steps3 { grid-template-columns: 1fr; gap: 26px; }
+    .built-with-list { grid-template-columns: 1fr 1fr; }
+    .built-with-list li:nth-child(3) { border-left: 0; }
+    .built-with-list li:nth-child(n + 3) { border-top: 2px dashed var(--line-strong); }
+  }
+  @media (max-width: 520px) {
+    .built-with-list { grid-template-columns: 1fr; }
+    .built-with-list li + li { border-left: 0; border-top: 2px dashed var(--line-strong); }
+  }
+</style>{% endblock styles %}
+{% block main %}
+<main>
+  <div class="wrap hero">
+    <section class="lp-hero">
+      <p class="kicker">Tickets for rooms, conferences, and recurring workshops</p>
+      <h1 class="h-xl lp-h1">Sell tickets. Manage attendees. <mark>Run the door.</mark></h1>
+      <p class="lp-sub">CrabGate is hosted ticketing for rooms, independent conferences, and recurring workshops. Create an event, sell tickets, manage attendees, email buyers, check people in, and export your records.</p>
+      <p class="micro"><b>{{ price }} USD a year</b> for unlimited events and tickets. No CrabGate transaction fee, no percentage of ticket sales. Stripe’s card fee still applies.</p>
+      <div class="choose">
+        <p class="small">Which one do you run?</p>
+        <div class="btn-row">
+          <a class="btn btn-sm" href="/for-rooms-with-an-audience">A room</a>
+          <a class="btn btn-sm" href="/for-conferences">A conference</a>
+          <a class="btn btn-sm" href="/for-workshops">Workshops</a>
+        </div>
+      </div>
+    </section>
+    <div class="collage" aria-hidden="true">
+      <img class="mark" src="/static/shared/crabgate-mark.svg" alt="" width="220" height="292">
+      <div class="mini paper">
+        <span class="tape tape-c"></span>
+        <img src="/static/marketing/quartet.jpg" alt="" width="1200" height="801">
+        <p class="kicker">Fictitious example event</p>
+        <p class="t">Autumn Chamber Night</p>
+        <p class="small muted">Sat 17 Oct, from €16</p>
+      </div>
+      <div class="mini-stub paper">
+        <p class="kicker" style="font-size:.75rem">Fictitious example ticket</p>
+        <p class="t">Niamh Byrne</p>
+        <img src="/static/marketing/example-ticket.svg" alt="" width="84" height="84">
+      </div>
+      <span class="note big-note">Checked in ✓</span>
+    </div>
+  </div>
+
+  <section class="wrap lp-sec" aria-labelledby="who-h">
+    <h2 id="who-h" class="h-l">Which one do you run?</h2>
+    <div class="cards cards-3 who">
+      <article class="paper paper-pad"><span class="pin" aria-hidden="true"></span><h3 class="h-m"><a href="/for-rooms-with-an-audience">A room with an audience</a></h3><p>Publish your nights, set ticket prices and capacity, and give door staff a check-in link.</p></article>
+      <article class="paper paper-pad"><span class="pin" aria-hidden="true"></span><h3 class="h-m"><a href="/for-conferences">An independent conference</a></h3><p>Set early bird and standard sales windows, collect attendee details, and run registration.</p></article>
+      <article class="paper paper-pad"><span class="pin" aria-hidden="true"></span><h3 class="h-m"><a href="/for-workshops">A recurring workshop</a></h3><p>Set a weekly, fortnightly, or monthly Series. Sell each date separately and email buyers with joining instructions.</p></article>
+    </div>
+  </section>
+
+  <section class="wrap lp-sec" aria-labelledby="how-h">
+    <h2 id="how-h" class="h-l">From your first event to the final export</h2>
+    <ol class="steps3">
+      <li><span class="n">1</span><h3 class="h-m">Create an event</h3><p>Add a date, venue, ticket types, prices, capacity, and sales windows.</p></li>
+      <li><span class="n">2</span><h3 class="h-m">Sell tickets</h3><p>Share your hosted shop link. Buyers choose tickets and pay through Stripe, with no account to create.</p></li>
+      <li><span class="n">3</span><h3 class="h-m">Manage attendees</h3><p>See who's coming, review their details, and issue complimentary tickets from the Back Office.</p></li>
+      <li><span class="n">4</span><h3 class="h-m">Communicate with buyers</h3><p>Preview an event message and its recipient count. Email each eligible buyer once, including free and complimentary orders. Buyers forward it to their guests.</p></li>
+      <li><span class="n">5</span><h3 class="h-m">Check in</h3><p>Scan tickets with a phone camera or find attendees by name. Give helpers their own Door Link.</p></li>
+      <li><span class="n">6</span><h3 class="h-m">Export your records</h3><p>Download orders, tickets, and check-ins as CSV for your own records.</p></li>
+    </ol>
+  </section>
+
+  <section class="wrap lp-sec" aria-labelledby="why-h">
+    <h2 id="why-h" class="h-l">Why I built CrabGate</h2>
+    <div class="paper paper-pad letter">
+      <span class="tape tape-c" aria-hidden="true"></span>
+      <p>Hi, I'm Paul.</p>
+      <p>Selling a ticket isn't hard. Someone pays, they get a code, and you check the code at the door. Somewhere along the way that turned into a fee on every seat, paid by you or by the people who came to see you.</p>
+      <p>That fee makes sense when a platform finds your audience for you. It makes a lot less sense when you found them yourself: your list, your regulars, your community.</p>
+      <p>So I built CrabGate. One flat price a year. The money goes straight to your account. A shop that sells the tickets and a door that checks people in, and nothing you don't need.</p>
+      <p>{% if offer_ends %}Until {{ offer_ends }}, I'm setting up every new shop myself, one call at a time.{% else %}I set up new shops myself, one call at a time.{% endif %} I'd like yours to be one of them.</p>
+      <p class="sig"><img src="/static/marketing/paul-badarau.webp" alt="" width="360" height="360" loading="lazy">Paul Bădărău, founder</p>
+    </div>
+  </section>
+
+  <section class="wrap built-with" aria-labelledby="built-with-h">
+    <h2 id="built-with-h" class="h-m">Built with</h2>
+    <p class="built-with-intro">The tools and infrastructure behind CrabGate.</p>
+    <ul class="paper built-with-list">
+      <li><a href="https://rust-lang.org/" aria-label="Visit the Rust programming language website"><img src="/static/marketing/built-with/rust-logo.svg" alt="" width="144" height="144" loading="lazy"><span class="brand-name">Rust</span></a></li>
+      <li><a href="https://loco.rs/" aria-label="Visit the Loco web framework website"><img src="/static/marketing/built-with/loco-mark.svg" alt="" width="413" height="413" loading="lazy"><span class="brand-name">Loco</span></a></li>
+      <li><a href="https://postdeploy.dev/" aria-label="Visit the PostDeploy website"><img class="postdeploy-mark" src="/static/marketing/built-with/postdeploy-mark.svg" alt="" width="256" height="256" loading="lazy"><span class="brand-name">PostDeploy</span></a></li>
+      <li><a href="https://www.ovhcloud.com/" aria-label="Visit the OVHcloud website"><svg class="ovhcloud-logo" viewBox="0 0 307.6 47.2" role="img" aria-hidden="true" width="308" height="47"><use href="/static/marketing/built-with/ovhcloud-logo.svg#ocmscloud_logo_us"></use></svg><span class="sr-only">OVHcloud</span></a></li>
+    </ul>
+    <p class="built-with-credit">Rust logo © Rust Foundation, used under <a href="https://creativecommons.org/licenses/by/4.0/">CC BY 4.0</a>.</p>
+  </section>
+
+  {% include "marketing/_demo.html" %}
+
+  {% include "marketing/_offer.html" %}
+
+  <div class="wrap lp-next">
+    <p>CrabGate is {{ price }} a year. The <a href="/pricing">pricing page</a> has everything it costs.</p>
+    <p>Considering a switch? Compare CrabGate as an <a href="/eventbrite-alternative">Eventbrite alternative</a>, or use the <a href="/tools/eventbrite-fee-calculator">Eventbrite fee calculator</a> to check buyer-paid and organizer-paid fees.</p>
+  </div>
+</main>
+{% endblock main %}

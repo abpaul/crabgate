@@ -1,0 +1,10 @@
+{% extends "marketing/base.html" %}
+{% block language %}en-US{% endblock language %}
+{% block title %}Practical ticketing guides for event organizers | CrabGate{% endblock title %}
+{% block description %}Free templates and practical guides for selling tickets, registering workshop attendees and preparing small events. No email needed to download.{% endblock description %}
+{% block main %}
+<main><section class="wrap lp-hero"><h1 class="h-xl lp-h1">Practical guides for your next event</h1><p class="lp-sub">A useful template, a clear plan, and a next step you can take today.</p></section>
+<section class="wrap lp-sec"><div class="grid2">{% for guide in guides %}<article class="paper paper-pad"><p class="kicker">{{ guide.audience }}</p><h2 class="h-m"><a href="{{ guide.path }}">{{ guide.title }}</a></h2><p>{{ guide.description }}</p></article>{% endfor %}</div></section>
+<section class="wrap lp-sec"><h2 class="h-l">Tools for the numbers</h2><p>Use the <a href="/tools/ticket-price-calculator">ticket price calculator</a> to check your budget or the <a href="/tools/stripe-fee-calculator">Stripe fee calculator</a> to estimate payment processing. <a href="/tools">See all free tools</a>.</p><p>Running a conference? See <a href="/for-conferences">ticketing for independent conferences</a>. We are preparing a registration checklist for that workflow.</p></section>
+</main>
+{% endblock main %}

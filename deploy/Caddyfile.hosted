@@ -1,0 +1,5 @@
+{$SHOP_BASE_DOMAIN}, *.{$SHOP_BASE_DOMAIN} {
+	tls /etc/caddy/origin/cert.pem /etc/caddy/origin/key.pem
+	encode zstd gzip
+	reverse_proxy app:5150
+}

@@ -1,0 +1,12 @@
+target
+.git
+.env
+*.db
+*.sqlite
+data
+prototypes
+docs
+tests
+compose.dev.yaml
+compose.yaml
+README.md

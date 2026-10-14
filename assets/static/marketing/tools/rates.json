@@ -1,0 +1,188 @@
+{
+  "checked": "5 October 2026",
+  "exchange": {
+    "GBP": 75,
+    "EUR": 90,
+    "USD": 100
+  },
+  "exchange_note": "Illustrative assumption chosen on 5 October 2026: US$1 = \u00a30.75 or \u20ac0.90. This is not a live exchange quote. Your card provider sets the actual conversion.",
+  "providers": [
+    {
+      "id": "ticketsource",
+      "name": "TicketSource",
+      "currency": "GBP",
+      "bps": 700,
+      "fixed": 0,
+      "minimum": 25,
+      "cap": null,
+      "processor": false,
+      "payer": "buyer",
+      "buyer": true,
+      "source": "https://www.ticketsource.com/pricing",
+      "note": "TicketSource payment processing: 7%, minimum \u00a30.25 per booking, plus VAT. Card processing included. One ticket per booking assumed."
+    },
+    {
+      "id": "humanitix",
+      "name": "Humanitix",
+      "currency": "GBP",
+      "bps": 467,
+      "fixed": 46,
+      "minimum": 0,
+      "cap": null,
+      "processor": false,
+      "payer": "buyer",
+      "buyer": true,
+      "source": "https://humanitix.com/gb/pricing",
+      "note": "Standard UK rate: 4.67% + \u00a30.46, excluding VAT. Card processing included. The help page publishes a separately rounded VAT-inclusive rate; this calculator uses the pricing page before VAT.",
+      "payer_source": "https://help.humanitix.com/en/articles/12292391-what-are-the-humanitix-booking-fees"
+    },
+    {
+      "id": "tito",
+      "name": "Tito",
+      "currency": "EUR",
+      "bps": 300,
+      "fixed": 0,
+      "minimum": 0,
+      "cap": 2500,
+      "processor": true,
+      "payer": "organiser",
+      "buyer": false,
+      "source": "https://ti.to/pricing",
+      "note": "Standard rate: 3%, capped at \u20ac25 per ticket. Stripe charged separately. Tito does not add a separate booking fee for buyers. Taxes excluded.",
+      "payer_source": "https://help.tito.io/en/articles/2006154-can-i-pass-booking-fees-along-to-attendees"
+    },
+    {
+      "id": "ticket-tailor",
+      "name": "Ticket Tailor",
+      "currency": "GBP",
+      "bps": 0,
+      "fixed": 60,
+      "minimum": 0,
+      "cap": null,
+      "processor": true,
+      "payer": "organiser",
+      "buyer": true,
+      "source": "https://www.tickettailor.com/pricing",
+      "note": "Pay as you go: \u00a30.60 per paid ticket, plus VAT and card processing. Upfront credits, first-five-ticket promotion and discounts excluded. Default payer is not stated on the pricing page; organiser selected as an assumption."
+    },
+    {
+      "id": "eventbrite",
+      "name": "Eventbrite",
+      "currency": "GBP",
+      "bps": 695,
+      "fixed": 59,
+      "minimum": 0,
+      "cap": null,
+      "processor": false,
+      "payer": "buyer",
+      "buyer": true,
+      "source": "https://www.eventbrite.co.uk/organizer/pricing/",
+      "note": "UK rate: 6.95% + \u00a30.59 per sold ticket, card processing included. UK figure confirmed in the official fee table; pricing page displays USD rates. Taxes excluded.",
+      "rate_source": "https://www.eventbrite.com/help/en-us/articles/755615/",
+      "currency_rates": {
+        "USD": {
+          "currency": "USD",
+          "bps": 370,
+          "fixed": 179,
+          "payment_bps": 290,
+          "checked": "9 October 2026",
+          "source": "https://www.eventbrite.com/organizer/pricing/",
+          "rate_source": "https://www.eventbrite.com/help/en-us/articles/755615/",
+          "note": "US online paid tickets: 3.7% + $1.79 service fee per ticket and 2.9% payment processing per order, including service fees and tax. Both fees can be passed to buyers or absorbed. This estimate excludes tax and assumes one ticket per order."
+        }
+      }
+    }
+  ],
+  "stripe": [
+    {
+      "country": "UK",
+      "currency": "GBP",
+      "source": "https://stripe.com/gb/pricing",
+      "types": [
+        {
+          "name": "Standard UK card",
+          "bps": 150,
+          "fixed": 20,
+          "cap": null
+        },
+        {
+          "name": "Premium UK card",
+          "bps": 280,
+          "fixed": 20,
+          "cap": null
+        },
+        {
+          "name": "EEA card",
+          "bps": 250,
+          "fixed": 20,
+          "cap": null
+        },
+        {
+          "name": "Other international card",
+          "bps": 315,
+          "fixed": 20,
+          "cap": null
+        }
+      ],
+      "payer": "organiser",
+      "buyer": "Not stated on pricing page",
+      "cap": null
+    },
+    {
+      "country": "EU (Ireland)",
+      "currency": "EUR",
+      "source": "https://stripe.com/ie/pricing",
+      "types": [
+        {
+          "name": "Standard EEA card",
+          "bps": 150,
+          "fixed": 25,
+          "cap": null
+        },
+        {
+          "name": "Premium EEA card",
+          "bps": 280,
+          "fixed": 25,
+          "cap": null
+        },
+        {
+          "name": "UK card",
+          "bps": 250,
+          "fixed": 25,
+          "cap": null
+        },
+        {
+          "name": "Other international card",
+          "bps": 315,
+          "fixed": 25,
+          "cap": null
+        }
+      ],
+      "payer": "organiser",
+      "buyer": "Not stated on pricing page",
+      "cap": null
+    },
+    {
+      "country": "US",
+      "currency": "USD",
+      "source": "https://stripe.com/pricing",
+      "types": [
+        {
+          "name": "Domestic card",
+          "bps": 290,
+          "fixed": 30,
+          "cap": null
+        },
+        {
+          "name": "International card",
+          "bps": 440,
+          "fixed": 30,
+          "cap": null
+        }
+      ],
+      "payer": "organiser",
+      "buyer": "Not stated on pricing page",
+      "cap": null
+    }
+  ]
+}

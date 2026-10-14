@@ -1,0 +1,27 @@
+snapshot:
+  interval: 24h
+  retention: 720h
+
+validation:
+  interval: 5m
+
+endpoint: ${BACKUP_ENDPOINT}
+region: ${BACKUP_REGION}
+access-key-id: ${BACKUP_ACCESS_KEY_ID}
+secret-access-key: ${BACKUP_SECRET_ACCESS_KEY}
+
+dbs:
+  - path: /data/control.db
+    replica:
+      type: s3
+      bucket: ${BACKUP_BUCKET}
+      path: control.db
+      sync-interval: 30s
+  - dir: /data/organizers
+    pattern: "*.db"
+    watch: true
+    replica:
+      type: s3
+      bucket: ${BACKUP_BUCKET}
+      path: organizers
+      sync-interval: 30s

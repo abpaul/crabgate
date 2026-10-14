@@ -1,0 +1,67 @@
+{% extends "marketing/base.html" %}
+{% block title %}Terms | CrabGate{% endblock title %}
+{% block description %}The terms for using CrabGate: {{ price }} a year, a refund within 30 days, your ticket money in your own account, and your data always yours.{% endblock description %}
+{% block main %}
+<main>
+  <section class="wrap lp-hero">
+    <p class="kicker">Terms</p>
+    <h1 class="h-xl lp-h1">The deal, <mark>in plain words.</mark></h1>
+    <p class="lp-sub">You pay a flat yearly price. You sell your tickets, and the money goes to your own account. Your data stays yours.</p>
+    <p class="micro">Last updated 9 October 2026.</p>
+  </section>
+
+  <section class="wrap lp-sec legal" aria-label="Terms of service">
+    <h2 class="h-m" id="who">Who this is between</h2>
+    <p>These terms are an agreement between you, the organizer, and ALPLUS TECHNOLOGIES S.R.L., a company registered in Romania that runs CrabGate. "We" means that company. By creating a shop you agree to them. Questions go to <a href="mailto:hello@crabgate.com?subject=Terms">hello@crabgate.com</a>.</p>
+    <p>Company details: ALPLUS TECHNOLOGIES S.R.L., registration number (CUI) 55013997, trade register number J2026041446003, registered at Bd. Dâmbovița, nr. 60, sc. A, et. 4, ap. 14, Timișoara, Timiș, Romania.</p>
+
+    <h2 class="h-m" id="service">What you get</h2>
+    <p>A ticket shop at your own address on crabgate.com, a Back Office to run your events and orders, and a Door to check people in. We host it, update it, back it up, and answer your emails. Your subscription includes one setup call.</p>
+
+    <h2 class="h-m" id="account">Your account</h2>
+    <p>Give us a real name and a working email address. You're responsible for what the Admins and Door Staff you invite do in your shop, and for keeping sign-in links and Door Links to yourselves.</p>
+
+    <h2 class="h-m" id="price">Price and payment</h2>
+    <p>CrabGate costs {{ price }} a year, taxes included. You pay when you put your first event on sale, by card through Stripe. The subscription renews each year until you cancel.</p>
+    <p>You can cancel at any time from the Back Office. Your shop keeps working until the end of the year you paid for.</p>
+    <p>If we change the price, we'll email you at least 30 days before your next renewal. The new price applies from that renewal, never in the middle of a year.</p>
+
+    <h2 class="h-m" id="refunds">Refunds</h2>
+    <p>If CrabGate isn't for you, email us within 30 days of your first payment and we'll refund it in full.</p>
+    <p>Later yearly payments aren't refunded as a rule. If something went wrong, email us and we'll be fair about it.</p>
+
+    <h2 class="h-m" id="failed-payment">If a payment fails</h2>
+    <p>Nothing breaks. Your shop keeps working for 14 days while you sort it out. After that the subscription lapses: you can't publish or sell until you pay, but you can still check people in and Admins can export your data until deletion starts.</p>
+    <p>We start deleting the shop's live data 90 days after subscription lapse. We email your Admins 30 days, 7 days, and 1 day before that happens.</p>
+
+    <h2 class="h-m" id="tickets">Your tickets, your buyers, your money</h2>
+    <p>You are the seller of your tickets. The contract for a ticket is between you and your buyer, and CrabGate is the tool you use to make it.</p>
+    <p>Ticket money is paid into your own Stripe account. We never hold it and we take no fee from it. Stripe charges you its own fees under its own terms.</p>
+    <p>You're responsible for your events, your prices, your taxes, your refunds to buyers, and the laws that apply where you sell.</p>
+
+    <h2 class="h-m" id="data">Your data</h2>
+    <p>Your shop's data is yours. Admins can export it from the Back Office while the subscription is active or in grace, and during the 90 days after lapse, before deletion starts. Export access ends when deletion starts.</p>
+    <p>We store your buyers' and attendees' details on your behalf and use them only to run your shop. How we do that is set out on our <a href="/privacy">privacy page</a>, which is part of these terms.</p>
+
+    <h2 class="h-m" id="use">Fair use</h2>
+    <p>Use CrabGate for real events that you have the right to run. Don't use it to deceive buyers, to sell anything unlawful, to send spam, or to attack the service or other shops.</p>
+    <p>If a shop breaks these rules or puts buyers at risk, we may take it offline. We'll tell you why, and where we can we'll talk to you first.</p>
+
+    <h2 class="h-m" id="availability">Keeping it running</h2>
+    <p>We work to keep CrabGate available and back up shop data. Recovery depends on the last successful backup; a sync interval is not a guarantee that every change has been copied. Backup copies may remain after live deletion, and production backup expiry is not yet verified. We do not promise immediate unrecoverability. We don't promise that the service will never be interrupted, and we may take it down briefly for maintenance.</p>
+
+    <h2 class="h-m" id="liability">If something goes wrong</h2>
+    <p>If CrabGate fails you, tell us and we'll fix it or refund you. Beyond that, to the extent the law allows, our total liability to you is limited to what you paid us in the 12 months before the problem, and we aren't liable for lost profit or other indirect losses. Nothing here limits liability that the law says can't be limited.</p>
+
+    <h2 class="h-m" id="ending">Ending the agreement</h2>
+    <p>You can stop at any time by cancelling your subscription. We can end the agreement if you seriously or repeatedly break these terms. If we ever stop offering CrabGate, we'll give you at least 90 days' notice. Admins can export before closure while the shop's data remains available under the separate 90-day lapse rule above.</p>
+
+    <h2 class="h-m" id="changes">Changes to these terms</h2>
+    <p>If we change something that matters, we'll email your Admins at least 30 days before it takes effect. If you don't agree, you can cancel before then.</p>
+
+    <h2 class="h-m" id="law">The law that applies</h2>
+    <p>These terms are governed by the law of Romania, and the Romanian courts decide any dispute. If you have rights under the law of your own country that can't be signed away, you keep them.</p>
+    <p class="after">See also our <a href="/privacy">privacy page</a>.</p>
+  </section>
+</main>
+{% endblock main %}

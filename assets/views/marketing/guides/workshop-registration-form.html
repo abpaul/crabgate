@@ -1,0 +1,45 @@
+{% extends "marketing/guides/base.html" %}
+{% block article %}
+<p>A workshop registration form needs to tell you who has booked, which session they will attend, and how to contact them. If places are paid, it also needs a clear way to connect registration with payment.</p>
+<p>Start with the editable template below. It works as a planning sheet or a paper registration form. It is not a hosted online form, and downloading it does not register anyone for a workshop.</p>
+<p><a class="btn btn-line" href="/static/marketing/guides/workshop-registration-template.txt" download>Download the free registration template</a></p>
+<p>No email needed. Open the text file in an editor, replace the example details, and remove fields you do not need.</p>
+<nav aria-label="In this guide"><ul><li><a href="#fields">Choose the fields</a></li><li><a href="#example">A filled example</a></li><li><a href="#payment">Connect registration with payment</a></li><li><a href="#confirmation">Confirm the booking</a></li><li><a href="#ticketing">When to use ticketing</a></li></ul></nav>
+<h2 id="fields" class="h-l">Choose fields that support the workshop</h2>
+<p>Start with the essentials. A long form creates more work for the person booking and more information for you to maintain.</p>
+<div class="table-wrap"><table><thead><tr><th scope="col">Field</th><th scope="col">Why it is useful</th></tr></thead><tbody>
+<tr><td>Workshop name and session date</td><td>A person should know which session they are booking before they enter their details. Include the start time, time zone and location.</td></tr>
+<tr><td>Buyer name and email</td><td>This is the person responsible for the booking. Use the email to send the receipt and practical information.</td></tr>
+<tr><td>Number of places</td><td>A buyer may book for more than one person. Count places, not just orders, when checking capacity.</td></tr>
+<tr><td>Attendee name for each place</td><td>Separate the people attending from the person paying. This helps when one buyer books for colleagues or friends.</td></tr>
+<tr><td>Ticket type and total price</td><td>Make the selected option and total clear before payment. Explain any extra processing or booking charges.</td></tr>
+<tr><td>Booking reference and payment status</td><td>These are organizer records, not details for the attendee to invent. They let you connect a registration with the correct order.</td></tr>
+</tbody></table></div>
+<p>Add another question only if its answer changes how you prepare. A ceramics workshop may need a participant's experience level; an online session may need none of those extra details. Explain why you ask, make nonessential questions optional, and keep sensitive information out of a public attendee list.</p>
+<p>Do not put card numbers, security codes or bank details into a general registration form. Paid bookings should use the payment provider's checkout.</p>
+<h2 id="example" class="h-l">A filled example: one buyer, two attendees</h2>
+<section class="paper paper-pad" aria-label="Fictitious workshop registration example"><h3 class="h-m">Introduction to bookbinding</h3><ul>
+<li>Session: November 14, 2026, 10:00 a.m.–1:00 p.m., local venue time.</li>
+<li>Location: Example Studio, Room 2. This is a fictitious venue.</li>
+<li>Buyer: Alex Example, using a fictitious email address.</li>
+<li>Attendees: Alex Example and Sam Example.</li>
+<li>Places: 2. Ticket price: $35 each. Listed ticket subtotal: $70.</li>
+<li>Organizer record: booking reference DEMO-104; payment status recorded after checking the payment provider.</li>
+</ul><p>These are demo details, not a customer booking. Fees or applicable taxes may change the checkout total; show that total before the buyer confirms.</p></section>
+<p>The useful distinction is two places, one buyer. A spreadsheet with only one row per order can hide the number of people you expect at the door. Keep an attendee list as well as an order record.</p>
+<h2 id="payment" class="h-l">Connect registration with payment</h2>
+<p>A form submission and a successful payment are different events. Decide when a place is confirmed and explain that rule beside the registration step. A message saying “we received your form” should not imply “your place is paid and confirmed” unless that is true.</p>
+<p>If you collect registrations manually, reconcile them with payment records before confirming places. Do not rely only on a screenshot sent by the buyer. Check the payment record itself and record a reference you can find again.</p>
+<p>Set a capacity for each session. If one order reserves two places, subtract two places from availability. For several dates, keep the session date on every attendee record so a person does not appear on the wrong list.</p>
+<h2 id="confirmation" class="h-l">Give the buyer a clear confirmation</h2>
+<p>Once the booking is confirmed, send the workshop name, date, start time, address or joining instructions, number of places, and booking reference. Say what to bring and how to contact you about a change.</p>
+<p>If attendees need to check in separately, explain how they receive or share their tickets. Read the confirmation on a phone: a street address hidden in a long paragraph is easy to miss on the way to an event.</p>
+<p>Keep your change and refund instructions visible before purchase. A template is a prompt to write those instructions, not a promise that every booking tool can enforce your rules automatically.</p>
+<h2 id="ticketing" class="h-l">When a form is enough, and when ticketing helps</h2>
+<p>For a small free session, a simple form and a checked attendee list may be sufficient. For paid workshops, managing payment, place counts and check-in separately can make it harder to see which bookings are ready.</p>
+<p><a href="/for-workshops">CrabGate's workshop ticketing</a> brings ticket sales and door check-in into one shop. Each workshop date is its own event. The current product does not promise an automatic repeating schedule, waiting lists, class passes or memberships.</p>
+<p>If you need those features, compare a class booking system before choosing. If you want to sell places for specific dates to your own audience, a simple ticket shop may fit.</p>
+<h2 class="h-l">Check this before opening registration</h2>
+<ol><li>Read the workshop details as if you have never visited the venue.</li><li>Book one place, then check a booking for more than one attendee.</li><li>Confirm that capacity counts people rather than order rows.</li><li>Open the confirmation and ticket on a phone.</li><li>Check how staff find a booking and who handles changes.</li></ol>
+<p>Next, read <a href="/guides/sell-tickets-small-event">how to sell tickets for a small event</a> for a complete launch checklist.</p>
+{% endblock article %}

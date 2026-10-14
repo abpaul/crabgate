@@ -1,0 +1,135 @@
+<!doctype html>
+<html lang="{% block language %}en-IE{% endblock language %}">
+<head><link rel="icon" href="/favicon.ico" sizes="32x32"><link rel="icon" type="image/svg+xml" href="/static/shared/favicon.svg"><link rel="apple-touch-icon" href="/apple-touch-icon.png">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>{% block title %}{% endblock title %}</title>
+<meta name="description" content="{% block description %}{% endblock description %}">
+{% block robots %}{% endblock robots %}
+<link rel="canonical" href="{{ canonical | safe }}">
+<link rel="preload" href="/static/shared/figtree-latin-wght.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="stylesheet" href="/static/shared/crabgate.css">
+<style>
+  .mk-nav a[aria-current] { text-decoration-thickness: .14em; text-decoration-color: var(--yellow); }
+  .mk-top { flex-wrap: wrap; }
+  .mk-nav { flex-wrap: wrap; justify-content: flex-end; }
+  .mk-foot .by { flex-basis: 100%; }
+
+  .lp-hero { padding-block: 16px 44px; }
+  .lp-hero > * { max-width: 900px; }
+  .lp-hero .kicker { margin-bottom: 10px; }
+  .lp-h1 { font-size: clamp(2rem, 4.6vw, 3.75rem); line-height: 1; }
+  .lp-sub { margin-top: 14px; font-size: clamp(1.125rem, 1.7vw, 1.375rem); line-height: 1.4; max-width: 46ch; }
+  .terms { margin-top: 14px; font-size: 1.0625rem; line-height: 1.45; max-width: 62ch; }
+  .terms .amount { font-size: 1.375rem; font-weight: 900; color: var(--deep); white-space: nowrap; }
+  .lp-hero .btn-row { margin-top: 20px; }
+  .not-for { margin-top: 16px; max-width: 62ch; }
+  .micro { margin-top: 12px; font-size: 1rem; color: var(--muted); max-width: 60ch; }
+  .sum { margin-top: 22px; max-width: 760px; }
+  .sum p + p { margin-top: 12px; }
+  .sum .big { font-size: 1.375rem; font-weight: 900; color: var(--deep); line-height: 1.25; }
+  .letter { max-width: 720px; margin-top: 22px; transform: rotate(-.4deg); font-size: 1.125rem; }
+  .letter p + p { margin-top: 12px; }
+  .letter .sig { display: flex; align-items: center; gap: 14px; margin-top: 18px; font-weight: 800; color: var(--deep); }
+  .letter .sig img { width: 56px; height: 56px; border-radius: 50%; object-fit: cover; }
+  .demo { display: grid; grid-template-columns: minmax(0, 1fr) 250px; gap: 40px; align-items: end; margin-top: 28px; max-width: 1080px; }
+  .demo figure { margin: 0; }
+  .demo figcaption { margin-top: 12px; font-size: 1rem; color: var(--muted); }
+  .shot-browser { border: 3px solid var(--ink); border-radius: 12px; overflow: hidden; background: var(--paper); box-shadow: var(--shadow); transform: rotate(-.5deg); }
+  .shot-browser .bar { display: flex; align-items: center; gap: 7px; padding: 9px 12px; border-bottom: 3px solid var(--ink); background: var(--yellow-pale); }
+  .shot-browser .bar i { width: 11px; height: 11px; border-radius: 50%; border: 2px solid var(--ink); }
+  .shot-browser .bar span { margin-left: 8px; padding: 2px 12px; border-radius: 99px; background: var(--paper); border: 2px solid var(--ink); font-size: .875rem; font-weight: 700; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .shot-browser img { width: 100%; }
+  .shot-phone { padding: 9px; border-radius: 34px; background: var(--deep); box-shadow: var(--shadow); transform: rotate(1.5deg); }
+  .shot-phone img { width: 100%; border-radius: 26px; }
+  .closing { padding-block: 24px 64px; }
+  .closing .h-l { max-width: 22ch; }
+  .closing .btn-row { margin-top: 20px; }
+
+  .lp-sec { padding-block: 40px; }
+  .legal { font-size: 1.125rem; padding-block: 8px 64px; }
+  .legal > * { max-width: 68ch; }
+  .legal .h-m { margin-top: 40px; scroll-margin-top: 24px; }
+  .legal .h-m:first-child { margin-top: 0; }
+  .legal p, .legal ul { margin-top: 12px; }
+  .lp-body { display: grid; gap: 14px; margin-top: 18px; max-width: 64ch; font-size: 1.125rem; }
+  .lp-split { display: grid; grid-template-columns: minmax(0, 1.4fr) minmax(0, 1fr); gap: 40px; align-items: start; }
+  .lp-split .sticky-note { margin-top: 18px; font-size: 1.0625rem; }
+  .lp-split .sticky-note p { margin-top: 8px; }
+  .cards { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 28px; margin-top: 26px; }
+  .cards-3 { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  .cards .paper p { margin-top: 8px; font-size: 1.0625rem; }
+  .cards .paper p.fee { font-size: 1.375rem; font-weight: 900; color: var(--deep); line-height: 1.2; }
+  .src { font-size: .9375rem; color: var(--muted); }
+  .noes li, .dots li { list-style: none; position: relative; padding: 8px 0 8px 34px; }
+  .noes li::before { content: "×"; position: absolute; left: 4px; top: 2px; font-size: 1.625rem; font-weight: 900; line-height: 1.5; color: var(--deep); }
+  .dots li::before { content: ""; position: absolute; left: 6px; top: 17px; width: 12px; height: 12px; border-radius: 50%; background: var(--yellow); box-shadow: inset 0 0 0 2px var(--ink); }
+  .sheet { margin-top: 26px; max-width: 900px; font-size: 1.0625rem; }
+  .sheet .h-s { margin-top: 18px; }
+  .sheet .h-s:first-child { margin-top: 0; }
+  .sheet .after { margin-top: 14px; }
+  .sheet .table th { white-space: normal; vertical-align: bottom; }
+  .ask { margin-top: 18px; max-width: 64ch; font-size: 1.0625rem; }
+  .offer { max-width: 980px; padding-top: 46px; }
+  .founder { display: grid; grid-template-columns: 132px minmax(0, 1fr); gap: 28px; align-items: start; margin-top: 22px; }
+  .founder img { width: 132px; height: 132px; object-fit: cover; padding: 6px 6px 18px; background: var(--paper); box-shadow: var(--shadow-sm); transform: rotate(-3deg); }
+  .founder .lede { max-width: 58ch; }
+  .founder .lede + .lede { margin-top: 10px; }
+  .offer .cols-2 { margin-top: 8px; font-size: 1.0625rem; }
+  .offer .btn-row { margin-top: 24px; }
+  .offer .promise { margin-top: 20px; max-width: 68ch; font-size: 1.0625rem; }
+  .offer .charity { margin-top: 24px; padding-top: 18px; border-top: 2px dashed var(--line-strong); max-width: 68ch; font-size: 1.0625rem; }
+  .offer .more { margin-top: 12px; font-size: 1rem; }
+  .faq dl { display: grid; grid-template-columns: 1fr 1fr; gap: 26px; margin-top: 26px; }
+  .faq dd { margin-top: 6px; font-size: 1.0625rem; }
+  .lp-next { padding-block: 8px 64px; font-size: 1.125rem; }
+  .lp-next p { max-width: 64ch; }
+  @media (max-width: 920px) {
+    .lp-hero { padding-block: 4px 32px; }
+    .lp-sec { padding-block: 30px; }
+    .lp-split, .cards, .cards-3, .faq dl { grid-template-columns: 1fr; }
+    .lp-split { gap: 8px; }
+    .founder { grid-template-columns: 1fr; gap: 18px; }
+    .demo { grid-template-columns: 1fr; gap: 28px; }
+    .demo .phone { width: 220px; justify-self: center; }
+    .founder img { width: 112px; height: 112px; }
+    .sheet.table-wrap { padding: 14px 8px; }
+    .sheet .table { font-size: 1rem; }
+    .sheet .table th, .sheet .table td { padding: 10px 6px; }
+  }
+</style>
+{% block styles %}{% endblock styles %}
+</head>
+<body class="board">
+<!--email_off-->
+<header class="wrap mk-top">
+  <a class="brand" href="/"><img src="/static/shared/crabgate-mark-small.svg" alt="" width="40" height="40">CrabGate</a>
+  <nav class="mk-nav" aria-label="Main">
+    <a class="hide-sm" href="/for-rooms-with-an-audience" {% if path == "/for-rooms-with-an-audience" %}aria-current="page"{% endif %}>Rooms</a>
+    <a class="hide-sm" href="/for-conferences" {% if path == "/for-conferences" %}aria-current="page"{% endif %}>Conferences</a>
+    <a class="hide-sm" href="/for-workshops" {% if path == "/for-workshops" %}aria-current="page"{% endif %}>Workshops</a>
+    <a class="hide-sm" href="/pricing" {% if path == "/pricing" %}aria-current="page"{% endif %}>Pricing</a>
+    <a class="btn btn-line btn-sm" href="/sign-in" {% if path == "/sign-in" %}aria-current="page"{% endif %}>Sign in</a>
+    <a class="btn btn-sm" href="{{ setup_url | safe }}">Set up your next event</a>
+  </nav>
+</header>
+
+{% block main %}{% endblock main %}
+<footer class="mk-foot">
+  <div class="wrap">
+    <span>CrabGate. Tickets for rooms, conferences, and workshops.</span>
+    <a href="/for-rooms-with-an-audience">Rooms</a>
+    <a href="/for-conferences">Conferences</a>
+    <a href="/for-workshops">Workshops</a>
+    <a href="/pricing">Pricing</a>
+    <a href="/tools">Free tools</a>
+    <a href="/guides">Guides</a>
+    <a href="/privacy">Privacy</a>
+    <a href="/terms">Terms</a>
+    <span class="by">Something missing, or something we got wrong? <a href="mailto:hello@crabgate.com?subject=Feedback%20on%20CrabGate">Tell us at hello@crabgate.com</a>.</span>
+    <span class="by">Made by <a href="https://badarau.net">Paul Bădărău</a> at <a href="https://alplustech.com">AL+</a>, <a href="https://www.linkedin.com/in/paulbpa/">LinkedIn</a>, <a href="https://github.com/abpaul">GitHub</a></span>
+  </div>
+</footer>
+<!--/email_off-->
+</body>
+</html>

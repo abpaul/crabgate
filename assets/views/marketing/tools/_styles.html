@@ -1,0 +1,26 @@
+<style>
+.tool-sheets { display:grid; grid-template-columns:minmax(0,1fr) minmax(0,1fr); gap:28px; align-items:start; }
+.tool-sheets .paper { min-width:0; }
+.tool-inputs > h2 { margin-bottom:18px; }
+.tool-sheets .stamp { margin-bottom:12px; }
+.receipt { display:grid; gap:16px; margin-top:22px; }
+.receipt div { display:flex; flex-wrap:wrap; justify-content:space-between; gap:8px; border-bottom:2px dashed var(--line); padding-bottom:12px; }
+.receipt dd { margin-inline-start:auto; font-weight:800; font-variant-numeric:tabular-nums; }
+.tool-explanation p + p { margin-top:14px; }
+.tool-explanation { max-width:68ch; }
+.tool-row { display:grid; grid-template-columns:minmax(0,1fr) minmax(0,1fr); gap:12px; margin-top:18px; }
+.tool-row .field + .field { margin-top:0; }
+.tool-sheets h3 { margin-top:24px; }
+.tool-sheets .hint { margin-top:12px; }
+[hidden] { display:none !important; }
+@media(max-width:920px) { .tool-sheets { grid-template-columns:1fr; } }
+@media print {
+body:has(.print-sheet) > header, body:has(.print-sheet) > footer, body:has(.print-sheet) main > :not(.tool-work) { display:none; }
+body:has(.print-sheet) .tool-inputs, body:has(.print-sheet) .no-print { display:none; }
+body:has(.print-sheet) { background:var(--paper); }
+body:has(.print-sheet) .tool-work { margin:0; padding:0; max-width:none; }
+body:has(.print-sheet) .tool-sheets { display:block; }
+.print-sheet { box-shadow:none; margin:0; }
+@page { size:auto; margin:10mm; }
+}
+</style>

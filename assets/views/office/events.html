@@ -1,0 +1,87 @@
+{% extends "office/base.html" %}
+{% block title %}Events{% endblock title %}
+{% block styles %}
+<style>
+  .filters { margin-bottom: 22px; gap: 8px; }
+  .chip { display: inline-flex; align-items: center; gap: 8px; min-height: 44px; padding: 0 16px; border: 2px solid var(--ink); border-radius: 999px; background: var(--paper); text-decoration: none; font-size: 1rem; }
+  .chip b { font-weight: 900; color: var(--muted); }
+  .chip[aria-current] { background: var(--ink); color: #fff; }
+  .chip[aria-current] b { color: var(--yellow); }
+  .meter { display: inline-block; width: 90px; height: 10px; border: 2px solid var(--ink); border-radius: 6px; margin-right: 10px; vertical-align: middle; overflow: hidden; }
+  .meter span { display: block; height: 100%; background: var(--yellow); }
+  .sold, .nowrap { white-space: nowrap; }
+  .show-sm { display: none; }
+  .series-times { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin: 18px 0; }
+  .series-times .field + .field { margin-top: 0; }
+  @media (max-width: 720px) {
+    .show-sm { display: block; }
+    .series-times { grid-template-columns: 1fr; }
+    .sheet { padding: 12px 16px; }
+    .table-cards td.sold { grid-column: 1 / -1; }
+    .table-cards tr { grid-template-columns: 1fr auto; }
+    .table-cards td:nth-child(3) { text-align: right; }
+  }
+</style>
+{% endblock styles %}
+{% block content %}
+<div class="bo-head">
+  <div><p class="kicker">{{ organizer_name }}</p><h1 class="h-l">Events</h1></div>
+  <a class="btn" href="/office/events/new">New event</a>
+</div>
+<div class="filters btn-row" role="group" aria-label="Show">
+  {% for chip in filters %}
+  <a class="chip" {% if chip.active %}aria-current="true"{% endif %} href="/office/events?show={{ chip.key }}">{{ chip.label }} <b>{{ chip.count }}</b></a>
+  {% endfor %}
+</div>
+{% if correction_error %}<div class="paper paper-pad" role="alert" style="border-left:8px solid var(--error);margin-bottom:24px">{{ correction_error }}</div>{% endif %}
+{% if series_reviews | length > 0 %}
+<section class="paper paper-pad" aria-labelledby="review-heading" style="margin-bottom:24px">
+  <h2 class="h-m" id="review-heading">Series dates to review</h2>
+  <p>These dates are not on sale. Fixing times or Setup keeps them as Drafts. Review each date and choose Publish event when ready.</p>
+  {% for review in series_reviews %}
+  <article style="border-top:2px solid var(--ink);padding:18px 0">
+    <h3 class="h-s">{{ review.title }} — {{ review.date }}</h3>
+    <p class="small">{{ review.start_time }}–{{ review.end_time }} · {{ review.timezone }}</p>
+    {% if review.event_id %}
+    <p>Saved Draft reason: {{ review.reason }}</p>
+    <div class="btn-row"><a class="btn btn-line" href="/office/events/{{ review.event_id }}">Review Draft</a><a class="btn btn-line" href="/office/setup">Check Setup</a></div>
+    {% else %}
+    <p>Time correction needed: {{ review.reason }}</p>
+    <form method="post" action="/office/series/{{ review.series_id }}/dates/{{ review.date }}/correct">
+      <div class="series-times">
+        <div class="field"><label class="label" for="start-{{ review.series_id }}-{{ review.date }}">Corrected start time</label><input class="input" id="start-{{ review.series_id }}-{{ review.date }}" type="time" name="start_time" value="{{ review.start_time }}" required></div>
+        <div class="field"><label class="label" for="end-{{ review.series_id }}-{{ review.date }}">Corrected end time</label><input class="input" id="end-{{ review.series_id }}-{{ review.date }}" type="time" name="end_time" value="{{ review.end_time }}" required></div>
+      </div>
+      <button class="btn btn-line" type="submit">Create corrected Draft</button>
+    </form>
+    {% endif %}
+  </article>
+  {% endfor %}
+</section>
+{% endif %}
+<section class="paper paper-pad sheet">
+  <span class="tape tape-r" aria-hidden="true"></span>
+  {% if events | length == 0 %}
+  <div style="padding:18px 8px 22px;max-width:640px">
+    <h2 class="h-m">Your first event starts here</h2>
+    <p class="lede">Add the date, venue, and tickets. You can save a Draft before payments are set up.</p>
+    <div class="btn-row"><a class="btn" href="/office/events/new">Create your first event</a><a class="btn btn-line" href="/office/setup">See setup steps</a></div>
+  </div>
+  {% else %}
+  <div class="table-wrap"><table class="table table-cards">
+    <thead><tr><th scope="col">Event</th><th scope="col" class="hide-sm">Date</th><th scope="col">Status</th><th scope="col">Tickets sold</th><th scope="col" class="r hide-sm">Revenue</th></tr></thead>
+    <tbody>
+    {% for event in events %}
+    <tr>
+      <td><a href="/office/events/{{ event.id }}">{{ event.title }}</a>{% if event.series_label %}<div class="small muted">{{ event.series_label }}</div>{% endif %}<div class="small muted show-sm">{{ event.date_short }}</div></td>
+      <td class="hide-sm num nowrap">{{ event.date_short }}</td>
+      <td><span class="status {{ event.status_class }}">{{ event.status_label }}</span></td>
+      <td class="sold">{% if event.capacity %}<span class="meter" aria-hidden="true"><span style="width:{{ event.percent_sold }}%"></span></span><span class="num">{{ event.sold }} of {{ event.capacity }}</span>{% else %}<span class="small muted">Not on sale</span>{% endif %}</td>
+      <td class="r num hide-sm">{{ event.revenue }}</td>
+    </tr>
+    {% endfor %}
+    </tbody>
+  </table></div>
+  {% endif %}
+</section>
+{% endblock content %}

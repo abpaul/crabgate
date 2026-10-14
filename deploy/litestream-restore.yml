@@ -1,0 +1,11 @@
+endpoint: ${BACKUP_ENDPOINT}
+region: ${BACKUP_REGION}
+access-key-id: ${BACKUP_ACCESS_KEY_ID}
+secret-access-key: ${BACKUP_SECRET_ACCESS_KEY}
+
+dbs:
+  - path: /data/organizers/${ORGANIZER_ID}.db
+    replica:
+      type: s3
+      bucket: ${BACKUP_BUCKET}
+      path: organizers/${ORGANIZER_ID}.db

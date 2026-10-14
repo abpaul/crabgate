@@ -1,0 +1,55 @@
+services:
+  app:
+    build: .
+    image: ${CRABGATE_IMAGE:-crabgate:local}
+    env_file: .env
+    environment:
+      CRABGATE_EDITION: self-hosted
+      DATABASE_URL: sqlite:///data/control.db?mode=rwc
+      CRABGATE_ORGANIZER_DATABASE_DIR: /data/organizers
+      BINDING: 0.0.0.0
+      PORT: 5150
+      HOST: https://${DOMAIN}
+    volumes:
+      - crabgate-data:/data
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-fsS", "http://127.0.0.1:5150/"]
+      interval: 15s
+      timeout: 5s
+      retries: 12
+
+  caddy:
+    image: caddy:2.10.2-alpine
+    environment:
+      DOMAIN: ${DOMAIN}
+      ACME_EMAIL: ${ACME_EMAIL}
+    volumes:
+      - ./deploy/Caddyfile:/etc/caddy/Caddyfile:ro
+      - caddy-data:/data
+      - caddy-config:/config
+    ports:
+      - "80:80"
+      - "443:443"
+    depends_on:
+      app:
+        condition: service_healthy
+    restart: unless-stopped
+
+  litestream:
+    image: litestream/litestream:0.5.17
+    command: ["replicate", "-config", "/etc/litestream.yml"]
+    env_file: .env
+    volumes:
+      - crabgate-data:/data
+      - ./deploy/litestream.yml:/etc/litestream.yml:ro
+      - ./deploy/litestream-restore.yml:/etc/litestream-restore.yml:ro
+    depends_on:
+      app:
+        condition: service_healthy
+    restart: unless-stopped
+
+volumes:
+  crabgate-data:
+  caddy-data:
+  caddy-config:

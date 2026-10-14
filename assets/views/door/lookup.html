@@ -1,0 +1,55 @@
+{% extends "door/base.html" %}
+{% block title %}Find an attendee | Door{% endblock title %}
+{% block styles %}
+<style>
+  .look{flex:1;padding:16px;display:flex;flex-direction:column;gap:12px}
+  .big-input{min-height:64px;font-size:1.375rem;border-width:3px}
+  .people{list-style:none;border-top:3px solid var(--deep);padding:0}
+  .people li{display:grid;grid-template-columns:minmax(0,1fr) auto;align-items:center;gap:12px;padding:16px 0;border-bottom:2px solid var(--line)}
+  .people b{display:block;font-size:1.375rem;font-weight:900;color:var(--deep);line-height:1.2}
+  .people span{display:block;font-size:1rem;color:var(--muted);line-height:1.4}
+  .people div,.look p{overflow-wrap:anywhere}
+  .people .admission{font-weight:800;color:var(--deep);margin-top:6px}
+  .people .btn{min-height:64px;padding:0 18px}
+  @media(max-width:420px){.people li{grid-template-columns:minmax(0,1fr)}.people .btn{width:100%}}
+</style>
+{% endblock styles %}
+{% block content %}
+<main class="look">
+  {% if undone %}<p class="alert" role="status">Check-in undone. Ticket and order status still apply.</p>{% endif %}
+  <form role="search" method="get" action="{{ door_path }}/lookup">
+    {% if link_token %}<input type="hidden" name="link" value="{{ link_token }}">{% endif %}
+    <label class="label" for="q">Attendee name, buyer email or code</label>
+    <input class="input big-input" id="q" name="q" type="search" value="{{ query }}" autocomplete="off" aria-describedby="search-hint">
+    <p class="hint" id="search-hint">Enter at least 2 characters.</p>
+    <button class="btn" type="submit">Find</button>
+  </form>
+  {% if query | trim | length >= 2 %}
+    {% if matches %}
+    <p class="small muted" role="status">{{ matches | length }} ticket{% if matches | length != 1 %}s{% endif %} match “{{ query }}”</p>
+    {% if matches | length == 25 %}<p class="hint">Showing up to 25 tickets. Refine your search if needed.</p>{% endif %}
+    {% else %}<p class="alert" role="status">No tickets found for “{{ query }}”. Check the name, buyer email or ticket code.</p>{% endif %}
+  {% endif %}
+  <ul class="people">
+    {% for ticket in matches %}
+    <li>
+      <div>
+        <b>{% if ticket.attendee_name %}{{ ticket.attendee_name }}{% else %}No attendee name{% endif %}</b>
+        <span>{{ ticket.ticket_type }}, {{ ticket.code }}{% if ticket.seat %}, {{ ticket.seat }}{% endif %}</span>
+        {% if ticket.buyer_email %}<span>Buyer: {{ ticket.buyer_email }}</span>{% endif %}
+        <span>Order {{ ticket.order_number }}</span>
+        <span>Order status: {{ ticket.order_status }}</span>
+        <span>Ticket status: {{ ticket.status }}</span>
+        <span class="admission">{{ ticket.admission }}</span>
+        {% if ticket.checked_at %}<span>Checked in at {{ ticket.checked_at }}</span>{% endif %}
+      </div>
+      {% if ticket.checked_at and can_undo %}
+      <form method="post" action="{{ door_path }}/undo/{{ ticket.id }}{{ auth_query }}"><button class="btn btn-line" type="submit">Undo</button></form>
+      {% elif ticket.can_check_in %}
+      <form method="post" action="{{ door_path }}/check{{ auth_query }}"><input type="hidden" name="code" value="{{ ticket.code }}"><button class="btn" type="submit">Check in</button></form>
+      {% endif %}
+    </li>
+    {% endfor %}
+  </ul>
+</main>
+{% endblock content %}

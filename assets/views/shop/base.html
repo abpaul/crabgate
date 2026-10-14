@@ -1,0 +1,18 @@
+<!doctype html>
+<html lang="en-IE">
+<head><link rel="icon" href="/favicon.ico" sizes="32x32"><link rel="icon" type="image/svg+xml" href="/static/shared/favicon.svg"><link rel="apple-touch-icon" href="/apple-touch-icon.png">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>{% block title %}Events{% endblock title %} | {{ organizer_name }}</title>
+<link rel="preload" href="/static/shared/figtree-latin-wght.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="stylesheet" href="/static/shared/crabgate.css">
+{% block head %}{% endblock head %}
+{% block styles %}{% endblock styles %}
+</head>
+<body class="board">
+<header class="wrap shop-top"><a class="org" href="/">{{ organizer_name }}</a>{% block top_link %}{% endblock top_link %}</header>
+{% block content %}{% endblock content %}
+<footer class="shop-foot"><div class="wrap"><img src="/static/shared/crabgate-mark-small.svg" alt="" width="30" height="30"> <span>Powered by <a href="https://crabgate.com">CrabGate</a></span>{% if contact.imprint_url or contact.privacy_url %}<nav aria-label="Organizer legal information" style="display:flex;gap:16px;flex-wrap:wrap;margin-left:auto">{% if contact.imprint_url %}<a href="{{ contact.imprint_url }}">Imprint</a>{% endif %}{% if contact.privacy_url %}<a href="{{ contact.privacy_url }}">Privacy</a>{% endif %}</nav>{% endif %}</div></footer>
+{% block scripts %}{% endblock scripts %}
+</body>
+</html>

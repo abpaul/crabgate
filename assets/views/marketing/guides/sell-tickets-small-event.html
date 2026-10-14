@@ -1,0 +1,38 @@
+{% extends "marketing/guides/base.html" %}
+{% block article %}
+<p>To sell tickets for a small event, you need a clear event page, a price that works for your costs, a tested checkout and a way to reach the people who may come. The ticketing service handles bookings; you still need to bring the audience.</p>
+<p>This guide is for an organizer running a small show, talk, workshop or independent conference. It focuses on getting one real event ready, rather than building a large marketing campaign.</p>
+<p><a class="btn btn-line" href="/static/marketing/guides/small-event-launch-checklist.txt" download>Download the free launch checklist</a></p><p>Keep the editable text checklist with your event plan. No email is needed.</p>
+<nav aria-label="In this guide"><ol><li><a href="#details">Make the event details clear</a></li><li><a href="#price">Choose a workable price</a></li><li><a href="#platform">Choose the ticketing workflow</a></li><li><a href="#test">Test before sharing</a></li><li><a href="#share">Reach your audience</a></li><li><a href="#door">Prepare the door</a></li></ol></nav>
+<h2 id="details" class="h-l">1. Make the event details clear</h2>
+<p>Write the event name, date, start and end time, venue and the reason to attend. Say who it is for. A buyer should be able to tell whether the event fits them before they reach the ticket picker.</p>
+<p>Include practical details that change the decision: age restrictions, what is included, what to bring, and how people reach the venue. Do not hide a change of venue or a required item in the confirmation email.</p>
+<p>Use one public event URL when you share the event. If details change, update that page so older messages still lead to the current information.</p>
+<h2 id="price" class="h-l">2. Choose a price that works for your event</h2>
+<p>List your costs before copying another event's ticket price. Include the room, performers or speakers, materials and other costs you expect. Then choose a realistic paid attendance, not just the room's maximum capacity.</p>
+<section class="paper paper-pad" aria-label="Hypothetical ticket budget"><h3 class="h-m">A simple budget example</h3><p>An event has $800 in event costs and 80 available places. At a $20 ticket price, 40 paid tickets produce $800 in gross ticket revenue.</p><p>That is not yet a break-even result. Payment processing, any ticketing charges, applicable taxes and other costs can reduce what remains. At 30 paid tickets, gross ticket revenue is $600, so the event is already short of its $800 costs before those deductions.</p><p>This is an illustrative calculation, not a prediction of attendance or profit.</p></section>
+<p>Use the <a href="/tools/ticket-price-calculator">ticket price calculator</a> to compare attendance scenarios. The <a href="/tools/stripe-fee-calculator">Stripe fee calculator</a> estimates standard processing for the account country and card type you select; its assumptions and exclusions are listed on the page.</p>
+<p>Separate buyer-paid fees from organizer costs. If buyers cover a platform's booking fee, removing that fee does not automatically save you the same amount. An annual subscription may be a new organizer cost even when the buyer's total falls.</p>
+<h2 id="platform" class="h-l">3. Choose the ticketing workflow you need</h2>
+<p>For a small event, start with the basics: capacity, ticket types, payment, confirmation, attendee lookup and check-in. Check whether a buyer can book more than one place and whether you can export the records you need.</p>
+<p>A marketplace may offer discovery alongside ticketing. A standalone shop is a different choice: it gives you an event link to share with your own list, community and partners. Neither choice removes the need for a plan to reach suitable people.</p>
+<p><a href="/for-rooms-with-an-audience">CrabGate is built for rooms with their own audience</a>, as well as <a href="/for-conferences">independent conferences</a> and <a href="/for-workshops">workshops</a>. It costs {{ price }} a year with no CrabGate per-ticket fee; Stripe processing fees still apply. Ticket payments go to the organizer's own Stripe account.</p>
+<p>Before choosing, read the product limits and the current <a href="/pricing">pricing page</a>. Features such as reserved seating, memberships or automatic repeating schedules should be checked directly, not assumed from a general ticketing description.</p>
+<h2 id="test" class="h-l">4. Test the buying journey before sharing</h2>
+<p>Open the event page on a phone. Check the date, ticket options, total shown before payment and confirmation instructions. Look for text that wraps badly or a button that is hard to use.</p>
+<p>Use the platform's supported test process. Confirm how it distinguishes test payments from real ones before making a test purchase. On CrabGate, the setup call includes a test order so you can see what buyers receive.</p>
+<p>Check one place and a multi-place order. Open the confirmation email, find the event details and make sure a person can present the right ticket at the door. If a friend books for someone else, the payer's name should not leave staff guessing who is attending.</p>
+<p>Make sure you can find the order again. Decide who handles a buyer's question and how that person gets the correct booking reference.</p>
+<h2 id="share" class="h-l">5. Share one link with the right audience</h2>
+<p>Start with people who already know the room, organizer or subject. Explain the event in one short message: what it is, who it is for, when it happens and where to buy a ticket.</p>
+<p>Ask relevant partners to share the same event URL. A speaker, workshop tutor or local community may reach suitable people; a large unrelated audience may not. Give each partner accurate details they can use without rewriting the whole page.</p>
+<p>Check sales against your realistic attendance plan. If people open the page but do not buy, first check the event offer, price and checkout. Posting more often will not fix unclear details or a broken buying step.</p>
+<p>Keep messages useful. Tell people about a genuine deadline, changed detail or practical reason to attend. Do not invent a countdown or claim that tickets are almost gone when they are not.</p>
+<h2 id="door" class="h-l">6. Prepare the door before event day</h2>
+<p>Decide who checks people in and what they should do when a ticket cannot be found. Share the correct staff access, charge the phone and check the venue connection before arrivals begin. Do not assume a tool works offline unless that behavior is supported and tested.</p>
+<p>On CrabGate, the Door Link is the phone check-in entry point. Staff should know when to scan a ticket and how to look up an attendee. Agree who handles a duplicate scan, a changed name or a booking question rather than leaving those decisions to the queue.</p>
+<p>Keep a contact route for the person responsible for orders. If you prepare an attendee export as part of your backup plan, protect it and share it only with the people who need it.</p>
+<h2 class="h-l">Before you announce the event</h2>
+<ul><li>The date, location and ticket total are clear.</li><li>The capacity counts places rather than orders.</li><li>The buying journey and confirmation have been checked.</li><li>The event link works from the messages you will share.</li><li>Door staff have the correct access and know the exception process.</li></ul>
+<p>For a paid workshop, use the <a href="/guides/workshop-registration-form">workshop registration template</a> to plan the buyer and attendee details you need.</p>
+{% endblock article %}

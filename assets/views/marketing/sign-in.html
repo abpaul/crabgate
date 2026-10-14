@@ -1,0 +1,32 @@
+{% extends "marketing/base.html" %}
+{% block title %}Sign in to your shop | CrabGate{% endblock title %}
+{% block description %}Open your CrabGate shop's sign-in page. We'll email you a link to your Back Office. No password needed.{% endblock description %}
+{% block robots %}<meta name="robots" content="noindex">{% endblock robots %}
+{% block styles %}<style>
+  .signin-page { padding-block: 24px 72px; }
+  .signin-form { max-width: 520px; margin-inline: auto; }
+  .signin-form .lede { margin-block: 12px 24px; }
+  .signin-form .btn { margin-top: 20px; }
+  .signin-form > .hint { margin-top: 16px; }
+  .signin-form .alert { margin-bottom: 16px; }
+</style>{% endblock styles %}
+{% block main %}
+<main class="wrap signin-page">
+  <form class="paper paper-pad signin-form" action="/sign-in" method="get" aria-labelledby="sign-in-heading">
+    <span class="tape tape-c" aria-hidden="true"></span>
+    <h1 class="h-l" id="sign-in-heading">Sign in to your shop</h1>
+    <p class="lede">Start with your shop address. On the next page, enter your email and we'll send you a sign-in link.</p>
+    {% if error %}<p class="alert" role="alert">{{ error }}</p>{% endif %}
+    <div class="field">
+      <label class="label" for="shop">Shop address</label>
+      <div class="input-group">
+        <input class="input" id="shop" name="shop" value="{{ shop }}" required maxlength="63" pattern="[a-zA-Z0-9]+(-[a-zA-Z0-9]+)*" autocapitalize="none" spellcheck="false" aria-describedby="shop-hint" {% if error %}aria-invalid="true"{% endif %}>
+        <span class="addon">.{{ base_domain }}</span>
+      </div>
+      <p class="hint" id="shop-hint">Use the part before .{{ base_domain }}. Your setup email has the address. If you're Door Staff, ask the organiser.</p>
+    </div>
+    <button class="btn" type="submit">Continue to sign in</button>
+    <p class="hint">Can't find your shop? <a href="mailto:hello@crabgate.com">Email hello@crabgate.com</a>.</p>
+  </form>
+</main>
+{% endblock main %}

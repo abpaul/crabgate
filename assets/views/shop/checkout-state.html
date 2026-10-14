@@ -1,0 +1,14 @@
+{% extends "shop/base.html" %}
+{% block title %}{{ title }}{% endblock title %}
+{% block head %}<meta name="robots" content="noindex">{% endblock head %}
+{% block top_link %}<a href="/">All events</a>{% endblock top_link %}
+{% block content %}
+<main class="wrap" style="padding-block:24px 72px">
+  <section class="paper paper-pad" aria-labelledby="state-heading" style="max-width:760px;overflow-wrap:anywhere">
+    <h1 id="state-heading" class="h-l">{{ title }}</h1>
+    <p role="status" style="margin-block:20px">{{ message }}</p>
+    <div class="btn-row">{% if action_url %}<a class="btn" href="{{ action_url }}">{{ action_label }}</a>{% endif %}{% if unpaid_checkout_url %}<a class="btn btn-line" href="{{ unpaid_checkout_url }}">If you have not paid: continue checkout</a>{% endif %}<a href="/">All events</a></div>
+    {% if contact.reply_to %}<p style="margin-top:24px">Need help? <a href="mailto:{{ contact.reply_to }}">Contact the organizer</a>.</p>{% endif %}
+  </section>
+</main>
+{% endblock content %}

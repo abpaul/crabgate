@@ -1,0 +1,94 @@
+{% extends "marketing/base.html" %}
+{% block title %}Ticketing for recurring workshops | CrabGate{% endblock title %}
+{% block description %}Schedule weekly, fortnightly or monthly workshops. Sell each date separately, manage attendees, email buyers and check in. {{ price }} USD a year, plus Stripe card fees.{% endblock description %}
+{% block main %}
+<main>
+  <section class="wrap lp-hero">
+    <p class="kicker">For workshops and training days that run again and again</p>
+    <h1 class="h-xl lp-h1">Schedule your workshops. <mark>Sell each date.</mark></h1>
+    <p class="lp-sub">Create a weekly, fortnightly, or monthly Series. Each date has its own tickets, capacity, and orders. Manage attendees, email buyers with joining instructions, and check in from a phone. Hosted ticketing for <b>{{ price }} USD a year</b>, plus Stripe’s card fee; we never take a cut.</p>
+    {% include "marketing/_cta.html" %}
+  </section>
+
+  <section class="wrap lp-sec" aria-labelledby="get-h">
+    <h2 id="get-h" class="h-l">Run each workshop date from booking to check-in</h2>
+    <div class="cards">
+      <article class="paper paper-pad"><h3 class="h-m">Schedule a Series, sell separate dates</h3><p>Repeat weekly, every two weeks, or monthly. Each date has its own event page, capacity, and orders. Buyers purchase one date at a time; there is no course pass.</p></article>
+      <article class="paper paper-pad"><h3 class="h-m">You know who's coming before they arrive</h3><p>Ask what you need at checkout, like experience level or food needs. One person can pay for a whole team and fill in the names later.</p></article>
+      <article class="paper paper-pad"><h3 class="h-m">Email buyers before the workshop</h3><p>Preview joining instructions and the recipient count. Send once to each eligible buyer, including free and complimentary orders. Buyers forward the message to other attendees in their order.</p></article>
+      <article class="paper paper-pad"><h3 class="h-m">Check in and export the date’s records</h3><p>Scan tickets or find attendees by name in a phone browser. Download orders, tickets, attendee answers, and check-ins as CSV.</p></article>
+    </div>
+  </section>
+
+  <section class="wrap lp-sec" aria-labelledby="sum-h">
+    <h2 id="sum-h" class="h-l">A percentage takes more the better you do</h2>
+    <div class="paper paper-pad sum">
+      <p>Say a place costs €200, and your ticket tool keeps 5%. That's €10 a place.</p>
+      <p class="big">Twelve people on a date is €120. Run it twice a month, and that's about €2,900 a year.</p>
+      <p>Fill more places, add more dates, or put your price up, and the tool takes more. It did nothing extra. You did. Over five years, that's about €14,400.</p>
+      <p class="big">With CrabGate, that line is {{ price }} a year, however many dates you run. Every extra place you fill is yours to keep.</p>
+      <p class="src">These are estimates. 5% is an example rate, not the rate of any named tool. The full table is <a href="#cmp-h">further down</a>.</p>
+    </div>
+  </section>
+
+  {% include "marketing/_offer.html" %}
+
+  {% include "marketing/_demo.html" %}
+
+  <section class="wrap lp-sec" aria-labelledby="cmp-h">
+    <h2 id="cmp-h" class="h-l">A percentage fee against {{ price }} a year</h2>
+    <div class="lp-body">
+      <p>The 3% and 5% below are example rates, not the rates of any named tool. Find your own rate on your last invoice.</p>
+    </div>
+    <div class="paper paper-pad sheet table-wrap">
+      <table class="table">
+        <thead><tr><th>Price of a place</th><th class="r">Example rate</th><th class="r">Fee a place</th></tr></thead>
+        <tbody>
+          <tr><td class="num">€50</td><td class="r num">3%</td><td class="r num">€1.50</td></tr>
+          <tr><td class="num">€90</td><td class="r num">3%</td><td class="r num">€2.70</td></tr>
+          <tr><td class="num">€90</td><td class="r num">5%</td><td class="r num">€4.50</td></tr>
+          <tr><td class="num">€200</td><td class="r num">5%</td><td class="r num">€10.00</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="lp-body">
+      <p>Your card processor's fee applies either way.</p>
+      <p class="src">These are example percentage fees, not a savings calculation. CrabGate's annual price is in US dollars.</p>
+    </div>
+  </section>
+
+  <section class="wrap lp-sec" aria-labelledby="not-h">
+    <h2 id="not-h" class="h-l">What's coming next</h2>
+    <div class="paper paper-pad sheet">
+      {% include "marketing/_on_our_list.html" %}
+      <p class="after">Not yet: waitlists, course passes, memberships, or scheduled reminders.</p>
+    </div>
+    {% include "marketing/_feedback.html" %}
+  </section>
+
+  <section class="wrap lp-sec faq" aria-labelledby="faq-h">
+    <h2 id="faq-h" class="h-l">Questions from people who run workshops</h2>
+    <dl>
+      <div class="paper paper-pad"><dt class="h-s">Can buyers choose tickets on my website?</dt><dd>Yes. Embed ticket selection for an Event or a Series on your website. Buyers choose a published future date for a Series, then ticket types and quantities. Buyer details, questions, booking terms, and Stripe payment continue through hosted checkout outside the iframe. Each purchase covers one date.</dd></div>
+      <div class="paper paper-pad"><dt class="h-s">How do repeat dates work?</dt><dd>Set a weekly, fortnightly, or monthly Series and preview its dates. CrabGate creates dates ahead on a rolling eight-date horizon, subject to the Series end date. Each date has separate capacity and orders. Blocked or invalid dates stay visible for review; after fixing them, you must explicitly publish them.</dd></div>
+      <div class="paper paper-pad"><dt class="h-s">Who receives workshop messages?</dt><dd>Each unique buyer email with a valid ticket receives the event message once, including free and complimentary orders. Fully refunded and void orders are excluded. Buyers forward instructions to their guests; messages do not go to each attendee separately.</dd></div>
+      <div class="paper paper-pad"><dt class="h-s">How do monthly dates work?</dt><dd>Monthly dates follow the weekday position, such as the second Thursday. If the first date is the fifth Thursday, later dates use the last Thursday of each month.</dd></div>
+      <div class="paper paper-pad"><dt class="h-s">What happens if I change or stop a Series?</dt><dd>Using an event’s setup for the Series affects only dates not yet created. Stopping the Series stops new dates; it leaves existing dates and orders intact.</dd></div>
+      <div class="paper paper-pad"><dt class="h-s">What does it cost besides {{ price }}?</dt><dd>Only your card processor's fee. Today that's Stripe, and we add nothing to it.</dd></div>
+      <div class="paper paper-pad"><dt class="h-s">Can one person pay for several places?</dt><dd>Yes. A buyer can put several places in one order and change the attendee names on the order page until the workshop starts.</dd></div>
+      <div class="paper paper-pad"><dt class="h-s">What if someone can't come?</dt><dd>You can refund their order from the Back Office in a couple of clicks.</dd></div>
+      <div class="paper paper-pad"><dt class="h-s">What if it isn't for me?</dt><dd>The setup call is free, and you pay only when your event goes on sale. If that first event doesn't go well, email Paul within 30 days of paying and he'll refund the {{ price }}.</dd></div>
+      <div class="paper paper-pad"><dt class="h-s">What if my payment to CrabGate fails?</dt><dd>Your shop keeps working for a 14-day grace period, so you have time to sort it out. If payment is not restored, your subscription lapses and ticket sales stop. Export your data before we delete your live hosted data, 90 days after your subscription lapses. While we retain your data, you can check in eligible tickets before the event ends.</dd></div>
+    </dl>
+  </section>
+
+  <section class="wrap lp-sec"><p>Planning your next event? Read our <a href="/guides/workshop-registration-form">workshop registration template</a>.</p></section>
+
+  <section class="wrap closing" aria-labelledby="close-h">
+    <h2 id="close-h" class="h-l">Your next date could be on sale this week.</h2>
+    {% include "marketing/_cta.html" %}
+  </section>
+
+  <div class="wrap lp-next"><p>Run a small room with its own list? Read <a href="/for-rooms-with-an-audience">CrabGate for rooms with an audience</a>. Run a conference? Read <a href="/for-conferences">CrabGate for independent conferences</a>. The price is on the <a href="/pricing">pricing page</a>.</p></div>
+</main>
+{% endblock main %}

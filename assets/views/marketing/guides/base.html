@@ -1,0 +1,37 @@
+{% extends "marketing/base.html" %}
+{% block language %}en-US{% endblock language %}
+{% block title %}{{ guide.seo_title }} | CrabGate{% endblock title %}
+{% block description %}{{ guide.description }}{% endblock description %}
+{% block styles %}
+<style>
+.guide { max-width: 760px; padding-bottom: 48px; }
+.guide h2 { margin-top: 36px; }
+.guide h3 { margin-top: 24px; }
+.guide p, .guide li { line-height: 1.65; }
+.guide p { margin-top: 16px; }
+.guide ul, .guide ol { padding-left: 24px; }
+.guide li { margin-top: 10px; }
+.guide .paper { margin-top: 24px; }
+.guide .byline { font-size: 1rem; }
+.guide table { width: 100%; border-collapse: collapse; }
+.guide th, .guide td { text-align: left; padding: 12px; border-bottom: 1px solid var(--ink); vertical-align: top; }
+.guide .table-wrap { overflow-x: auto; }
+@media print { .mk-top, .mk-foot, .guide-cta { display: none; } .guide { max-width: none; } }
+</style>
+<script type="application/ld+json">{{ guide_schema | safe }}</script>
+{% endblock styles %}
+{% block main %}
+<main class="wrap guide">
+  <p class="kicker"><a href="/guides">Organizer guides</a> / {{ guide.audience }}</p>
+  <h1 class="h-xl lp-h1">{{ guide.title }}</h1>
+  <p class="byline">By <a href="https://badarau.net">Paul Bădărău</a>, founder of CrabGate</p>
+  {% block article %}{% endblock article %}
+  <section class="paper paper-pad guide-cta" aria-labelledby="guide-next">
+    <h2 id="guide-next" class="h-m">Put your next event on sale</h2>
+    <p>CrabGate is a ticket shop for organizers who already have an audience. It costs {{ price }} a year, with no CrabGate per-ticket fee. Stripe processing fees still apply.</p>
+    <p>No card is needed to create your shop. Confirm your email to open your Back Office. You pay the annual subscription when you put your event on sale.</p>
+    <p><a class="btn" href="{{ setup_url | safe }}">Set up your next event</a></p>
+    <p><a href="/pricing">See pricing and product limits</a></p>
+  </section>
+</main>
+{% endblock main %}

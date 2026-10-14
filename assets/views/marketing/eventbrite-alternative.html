@@ -1,0 +1,77 @@
+{% extends "marketing/base.html" %}
+{% block title %}Eventbrite alternative for your next event | CrabGate{% endblock title %}
+{% block description %}Compare CrabGate with Eventbrite for rooms, independent conferences, and recurring workshops. Check workflow, fees, and marketplace tradeoffs.{% endblock description %}
+{% block main %}
+<main>
+  <section class="wrap lp-hero">
+    <p class="kicker">For organizers who already have an audience</p>
+    <h1 class="h-xl lp-h1">An Eventbrite alternative <mark>for your next event.</mark></h1>
+    <p class="lp-sub">Create an event, sell tickets, manage attendees, and check people in. CrabGate is hosted ticketing for small rooms, independent conferences, and recurring workshops with their own audiences.</p>
+    <p class="micro"><b>{{ price }} a year, in US dollars.</b> No CrabGate per-ticket fee. Stripe's processing fee still applies.</p>
+    <div class="btn-row"><a class="btn" href="{{ setup_url | safe }}">Set up your next event</a><a href="#demo-h">See the product demo</a></div>
+  </section>
+
+  <section class="wrap lp-sec" aria-labelledby="audience-h">
+    <h2 id="audience-h" class="h-l">Start with how people find your event</h2>
+    <div class="lp-body">
+      <p>Do your buyers arrive from your website, mailing list, or community? A hosted ticket shop may fit the way you already sell.</p>
+      <p>Eventbrite also provides a discovery marketplace. CrabGate does not replace that channel. Before switching, check which sales come from Eventbrite discovery and which come from links you share. The fee is only one part of the decision.</p>
+      <p class="src">Source: <a href="https://www.eventbrite.com/organizer/pricing/">Eventbrite pricing and marketplace features</a>, reviewed 9 October 2026.</p>
+    </div>
+    <div class="cards cards-3">
+      <article class="paper paper-pad"><h3 class="h-m">Small rooms</h3><p>Sell the next show to the people who follow your room. Check how your door staff will find and scan tickets.</p><p><a href="/for-rooms-with-an-audience">Ticketing for rooms with an audience</a></p></article>
+      <article class="paper paper-pad"><h3 class="h-m">Independent conferences</h3><p>Set up ticket types for your next conference. Check the booking details and attendee information you need.</p><p><a href="/for-conferences">Ticketing for independent conferences</a></p></article>
+      <article class="paper paper-pad"><h3 class="h-m">Recurring workshops</h3><p>Check the workflow for each workshop date: capacity, orders, and the information buyers need before they arrive.</p><p><a href="/for-workshops">Ticketing for recurring workshops</a></p></article>
+    </div>
+  </section>
+
+  {% include "marketing/_demo.html" %}
+
+  <section class="wrap lp-sec" aria-labelledby="workflow-h">
+    <h2 id="workflow-h" class="h-l">Check the booking and the door</h2>
+    <div class="lp-body">
+      <p>Use the demo screens to check the details that matter: how buyers choose tickets, what confirmation they receive, and how your staff find and check in attendees.</p>
+      <p>Ticket money goes through your own Stripe account. You can export event records. Payments, check-in, and exports are requirements to compare; they do not by themselves make a ticket shop unique.</p>
+      <p>Eventbrite also offers attendee check-in through its Organizer app. Compare the workflow your staff will use before choosing a shop.</p>
+      <p class="src">Source: <a href="https://www.eventbrite.com/help/en-gb/articles/741083/how-to-check-in-attendees-at-the-event-with-eventbrite-organizer/">Eventbrite attendee check-in</a>, reviewed 9 October 2026.</p>
+    </div>
+  </section>
+
+  <section class="wrap lp-sec" aria-labelledby="cost-h">
+    <h2 id="cost-h" class="h-l">Compare the organizer bill and the buyer bill</h2>
+    <div class="cards">
+      <article class="paper paper-pad"><h3 class="h-m">Eventbrite in the US</h3><p>Published US rates list a service fee of 3.7% plus $1.79 per paid ticket and payment processing of 2.9% of the order total, including service fees and tax. Free tickets have no Eventbrite ticketing fee.</p><p>Check your own agreement and the current rates before deciding.</p></article>
+      <article class="paper paper-pad"><h3 class="h-m">CrabGate</h3><p class="fee">{{ price }} a year, in US dollars.</p><p>The organizer pays a flat yearly bill. No CrabGate per-ticket fee or percentage of ticket sales. Stripe processing fees remain.</p><p><a href="/pricing">Read the current pricing</a></p></article>
+    </div>
+    <div class="lp-body">
+      <p>If buyers pay your Eventbrite fees today, those fees are part of their checkout bill. Removing that buyer charge does not make it an organizer saving. Include CrabGate's annual bill and Stripe processing when you compare your own costs.</p>
+      <p>For a cost estimate, use the <a href="/tools/eventbrite-fee-calculator">Eventbrite fee calculator</a>. Compare the same ticket sales, fee payer, and processing assumptions on both sides. The calculator excludes tax and assumes one ticket per card order; it does not model different order sizes.</p>
+      <p class="src">US rates reviewed 9 October 2026: <a href="https://www.eventbrite.com/help/en-us/articles/755615/">Eventbrite ticketing fees</a> and <a href="https://www.eventbrite.com/organizer/pricing/">Eventbrite pricing</a>. This is a pricing-model comparison, not a promise of savings.</p>
+    </div>
+  </section>
+
+  <section class="wrap lp-sec" aria-labelledby="next-h">
+    <h2 id="next-h" class="h-l">Try the next event before you move further</h2>
+    <div class="lp-body">
+      <p>Choose one upcoming event. Set up its ticket types and prices, inspect a test order, and check the door workflow before sending buyers to the new shop.</p>
+      <p>Keep existing Eventbrite orders in the system where they were sold. Make sure your staff know which system holds each ticket. Setting up your next event does not import old tickets or move your whole season.</p>
+      <p>If one buyer books for a group, check who receives the confirmation and how information reaches the other attendees.</p>
+    </div>
+  </section>
+
+  <section class="wrap lp-sec faq" aria-labelledby="faq-h">
+    <h2 id="faq-h" class="h-l">Questions before you switch</h2>
+    <dl>
+      <div class="paper paper-pad"><dt class="h-s">Will CrabGate find buyers for me?</dt><dd>CrabGate is a hosted ticket shop, not an event discovery marketplace. You bring the audience. If Eventbrite discovery brings you buyers, include that channel in your decision.</dd></div>
+      <div class="paper paper-pad"><dt class="h-s">Can I use my own domain, logo, and colors?</dt><dd>Not yet. Your hosted shop uses a CrabGate address. If branding is part of your decision, <a href="mailto:hello@crabgate.com">tell us what you need</a>.</dd></div>
+      <div class="paper paper-pad"><dt class="h-s">What should I check for recurring workshops?</dt><dd>Check dates, capacity, orders, and buyer instructions for each workshop. Read <a href="/for-workshops">CrabGate for workshops</a> and ask about the workflow your next date needs before you plan a series.</dd></div>
+      <div class="paper paper-pad"><dt class="h-s">Does no CrabGate ticket fee mean no payment fees?</dt><dd>No. Stripe processing still applies. The {{ price }} yearly subscription is paid by the organizer.</dd></div>
+    </dl>
+  </section>
+
+  <section class="wrap closing" aria-labelledby="close-h">
+    <h2 id="close-h" class="h-l">Start with the event you plan to sell next.</h2>
+    <div class="btn-row"><a class="btn" href="{{ setup_url | safe }}">Set up your next event</a><a href="/pricing">Check the current pricing</a></div>
+  </section>
+</main>
+{% endblock main %}
